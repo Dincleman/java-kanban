@@ -1,4 +1,3 @@
-// Класс для подзадач
 public class Subtask extends Task {
     private int epicId; // Достаточно id эпика для ссылки на него
 
@@ -11,4 +10,3 @@ public class Subtask extends Task {
         return epicId;
     }
 }
-

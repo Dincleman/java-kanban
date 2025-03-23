@@ -1,5 +1,3 @@
-import java.util.*;
-// Базовый класс для задач
 public class Task {
     private String title;
     private String description;
