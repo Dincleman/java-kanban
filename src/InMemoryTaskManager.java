@@ -1,10 +1,10 @@
 import java.util.*;
 
 public class InMemoryTaskManager implements TaskManager {
+
     private final Map<Integer, Task> tasks = new HashMap<>();
     private final Map<Integer, Subtask> subtasks = new HashMap<>();
     private final Map<Integer, Epic> epics = new HashMap<>();
-    private final List<Task> history = new ArrayList<>();
     private int idCounter = 1;
 
     private final HistoryManager historyManager = Managers.getDefaultHistory();
@@ -20,7 +20,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Task getTask(int id) {
         Task task = tasks.get(id);
         if (task != null) {
-            historyManager.add(task);
+            historyManager.add(task); // Добавляем задачу в историю
         }
         return task;
     }
@@ -43,16 +43,19 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTask(int id) {
         tasks.remove(id);
+        historyManager.remove(id); // Удаляем задачу из истории
     }
 
     @Override
     public void removeSubtask(int id) {
         subtasks.remove(id);
+        historyManager.remove(id); // Удаляем подзадачу из истории
     }
 
     @Override
     public void removeEpic(int id) {
         epics.remove(id);
+        historyManager.remove(id); // Удаляем эпик из истории
     }
 
     @Override
@@ -63,6 +66,6 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public List<Task> getHistory() {
-        return historyManager.getHistory();
+        return historyManager.getHistory(); // Получаем историю из HistoryManager
     }
 }
