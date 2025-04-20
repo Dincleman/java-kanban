@@ -1,6 +1,7 @@
 import java.util.List;
 
 public interface HistoryManager {
-    void add(Task task);
-    List<Task> getHistory();
+    void add(Task task); // Добавить задачу в историю
+    void remove(int id); // Удалить задачу из истории по id
+    List<Task> getHistory(); // Получить историю задач
 }
