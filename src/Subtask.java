@@ -1,5 +1,5 @@
 public class Subtask extends Task {
-    private int epicId;
+    private int epicId; // Достаточно id эпика для ссылки на него
 
     public Subtask(String title, String description, int epicId) {
         super(title, description);
@@ -8,15 +8,5 @@ public class Subtask extends Task {
 
     public int getEpicId() {
         return epicId;
-    }
-
-    @Override
-    public String toString() {
-        return "Subtask{" +
-                "id=" + getId() +
-                ", title='" + getTitle() + '\'' +
-                ", status=" + getStatus() +
-                ", epicId=" + epicId +
-                '}';
     }
 }
