@@ -1,75 +1,20 @@
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final Map<Integer, Node> historyMap = new HashMap<>();
-    private Node head;
-    private Node tail;
-
-    private static class Node {
-        Task task;
-        Node prev;
-        Node next;
-
-        Node(Task task) {
-            this.task = task;
-        }
-    }
+    private final List<Task> history = new LinkedList<>();
 
     @Override
     public void add(Task task) {
-        if (task == null) {
-            return;
+        if (history.size() >= 10) {
+            history.remove(0); // Удаляем самый старый элемент
         }
-        remove(task.getId()); // Удаляем задачу, если она уже есть в истории
-        linkLast(task); // Добавляем задачу в конец списка
-    }
-
-    @Override
-    public void remove(int id) {
-        Node node = historyMap.get(id);
-        if (node == null) {
-            return;
-        }
-        removeNode(node); // Удаляем узел из списка
-        historyMap.remove(id); // Удаляем задачу из мапы
+        history.add(task);
     }
 
     @Override
     public List<Task> getHistory() {
-        List<Task> history = new ArrayList<>();
-        Node current = head;
-        while (current != null) {
-            history.add(current.task);
-            current = current.next;
-        }
-        return history;
-    }
-
-    private void linkLast(Task task) {
-        Node newNode = new Node(task);
-        if (tail == null) {
-            head = newNode;
-        } else {
-            tail.next = newNode;
-            newNode.prev = tail;
-        }
-        tail = newNode;
-        historyMap.put(task.getId(), newNode);
-    }
-
-    private void removeNode(Node node) {
-        if (node.prev != null) {
-            node.prev.next = node.next;
-        } else {
-            head = node.next;
-        }
-        if (node.next != null) {
-            node.next.prev = node.prev;
-        } else {
-            tail = node.prev;
-        }
+        return new ArrayList<>(history);
     }
 }
