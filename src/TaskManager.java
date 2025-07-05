@@ -3,8 +3,11 @@ import java.util.List;
 public interface TaskManager {
     // Задачи
     int addNewTask(Task task);
+
     Task getTask(int id);
+
     List<Task> getTasks();
+
     void removeTask(int id);
 
     // Подзадачи
