@@ -44,6 +44,7 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
             epic.addSubtask(subtask);
+            epic.calculateStatus();
         }
         return subtask.getId();
     }
@@ -157,6 +158,13 @@ public class InMemoryTaskManager implements TaskManager {
         epics.clear();
         subtasks.clear();
     }
+
+    @Override
+    public List<Task> getAllTasks() {
+        List<Task> allTasks = new ArrayList<>();
+        allTasks.addAll(tasks.values());
+        allTasks.addAll(subtasks.values());
+        allTasks.addAll(epics.values());
+        return allTasks;
+    }
 }
-
-
