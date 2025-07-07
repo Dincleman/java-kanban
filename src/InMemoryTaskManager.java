@@ -3,12 +3,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Исключение для случая, когда задача не найдена
-public class TaskNotFoundException extends RuntimeException {
-    public TaskNotFoundException(String message) {
-        super(message);
-    }
-}
+// Импортируем исключение из вашего пакета
+import your.package.name.TaskNotFoundException;
 
 public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
