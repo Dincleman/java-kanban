@@ -44,4 +44,7 @@ public interface TaskManager {
     void removeAllSubtasks();
 
     void removeAllEpics();
+
+    // Добавленный метод для получения всех задач (тест требует именно его)
+    List<Task> getAllTasks();
 }
