@@ -1,3 +1,5 @@
+package tasks;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +11,9 @@ public class Epic extends Task {
     }
 
     public void addSubtask(Subtask subtask) {
+        if (getId() == subtask.getId()) {
+            throw new IllegalArgumentException("Подзадача не может быть своим эпиком");
+        }
         subtasks.add(subtask);
         calculateStatus();
     }
@@ -40,7 +45,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
+        return "tasks.Epic{" +
                 "id=" + getId() +
                 ", title='" + getTitle() + '\'' +
                 ", status=" + getStatus() +

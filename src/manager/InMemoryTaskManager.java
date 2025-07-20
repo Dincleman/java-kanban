@@ -1,11 +1,14 @@
-package your.package.name;
+package manager;
+
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+import tasks.TaskNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import your.package.name.TaskNotFoundException;
 
 public class InMemoryTaskManager implements TaskManager {
     private final Map<Integer, Task> tasks = new HashMap<>();
@@ -39,7 +42,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void removeTask(int id) {
         if (!tasks.containsKey(id)) {
-            throw new TaskNotFoundException("Task with id " + id + " not found");
+            throw new TaskNotFoundException("Tasks.Task with id " + id + " not found");
         }
         tasks.remove(id);
         historyManager.remove(id);
@@ -76,7 +79,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeSubtask(int id) {
         Subtask subtask = subtasks.get(id);
         if (subtask == null) {
-            throw new TaskNotFoundException("Subtask with id " + id + " not found");
+            throw new TaskNotFoundException("Tasks.Subtask with id " + id + " not found");
         }
         subtasks.remove(id);
         Epic epic = epics.get(subtask.getEpicId());
@@ -113,7 +116,7 @@ public class InMemoryTaskManager implements TaskManager {
     public void removeEpic(int id) {
         Epic epic = epics.get(id);
         if (epic == null) {
-            throw new TaskNotFoundException("Epic with id " + id + " not found");
+            throw new TaskNotFoundException("tasks.Epic with id " + id + " not found");
         }
         for (Subtask subtask : epic.getSubtasks()) {
             subtasks.remove(subtask.getId());
@@ -126,7 +129,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (!tasks.containsKey(task.getId())) {
-            throw new TaskNotFoundException("Task with id " + task.getId() + " not found");
+            throw new TaskNotFoundException("Tasks.Task with id " + task.getId() + " not found");
         }
         tasks.put(task.getId(), task);
     }
@@ -134,7 +137,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (!subtasks.containsKey(subtask.getId())) {
-            throw new TaskNotFoundException("Subtask with id " + subtask.getId() + " not found");
+            throw new TaskNotFoundException("Tasks.Subtask with id " + subtask.getId() + " not found");
         }
         subtasks.put(subtask.getId(), subtask);
         Epic epic = epics.get(subtask.getEpicId());
@@ -146,7 +149,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateEpic(Epic epic) {
         if (!epics.containsKey(epic.getId())) {
-            throw new TaskNotFoundException("Epic with id " + epic.getId() + " not found");
+            throw new TaskNotFoundException("tasks.Epic with id " + epic.getId() + " not found");
         }
         epics.put(epic.getId(), epic);
     }

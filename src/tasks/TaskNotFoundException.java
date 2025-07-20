@@ -1,4 +1,4 @@
-package your.package.name; // укажите ваш пакет
+package tasks;
 
 public class TaskNotFoundException extends RuntimeException {
     public TaskNotFoundException(String message) {

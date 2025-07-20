@@ -1,3 +1,10 @@
+import manager.InMemoryTaskManager;
+import manager.TaskManager;
+
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
+
 public class Main {
     public static void main(String[] args) {
         // Создаем менеджер задач
@@ -20,8 +27,8 @@ public class Main {
         Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", epic1Id);
 
         // Добавляем подзадачи
-        taskManager.addNewSubtask(subtask1);
-        taskManager.addNewSubtask(subtask2);
+        int subtask1Id = taskManager.addNewSubtask(subtask1);
+        int subtask2Id = taskManager.addNewSubtask(subtask2);
 
         // Получаем задачи и выводим их
         System.out.println("Задачи:");

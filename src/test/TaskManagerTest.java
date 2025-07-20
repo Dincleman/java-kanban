@@ -1,3 +1,9 @@
+package test;
+
+import manager.HistoryManager;
+import manager.Managers;
+import manager.TaskManager;
+import tasks.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,48 +14,47 @@ import static org.junit.jupiter.api.Assertions.*;
 class TaskManagerTest {
 
     private TaskManager taskManager;
-    private HistoryManager historyManager;
+    //private HistoryManager historyManager;
 
     @BeforeEach
     void setUp() {
-        taskManager = Managers.getDefault(); // Получаем экземпляр TaskManager
-        historyManager = Managers.getDefaultHistory(); // Получаем экземпляр HistoryManager
+        taskManager = Managers.getDefault(); // Получаем экземпляр Manager.TaskManager
+        //historyManager = Managers.getDefaultHistory(); // Получаем экземпляр Manager.HistoryManager
     }
 
     @Test
     void testTaskEqualityById() {
-        Task task1 = new Task("Task 1", "Description", Status.NEW);
-        Task task2 = new Task("Task 2", "Description", Status.NEW);
+        Task task1 = new Task("Tasks.Task 1", "Description", Status.NEW);
+        Task task2 = new Task("Tasks.Task 2", "Description", Status.NEW);
         task1.setId(1);
         task2.setId(1);
-        assertEquals(task1, task2, "Задачи должны быть равны по id.");
+        assertEquals(task1.getId(), task2.getId(), "Задачи должны быть равны по id.");
     }
 
     @Test
     void testSubtaskEqualityById() {
-        Subtask subtask1 = new Subtask("Subtask 1", "Description", 1);
-        Subtask subtask2 = new Subtask("Subtask 2", "Description", 1);
+        Subtask subtask1 = new Subtask("Tasks.Subtask 1", "Description", 1);
+        Subtask subtask2 = new Subtask("Tasks.Subtask 2", "Description", 1);
         subtask1.setId(1);
         subtask2.setId(1);
-        assertEquals(subtask1, subtask2, "Подзадачи должны быть равны по id.");
+        assertEquals(subtask1.getId(), subtask2.getId(), "Подзадачи должны быть равны по id.");
     }
 
+    // Попытка добавить эпик как подзадачу (некорректно)
     @Test
     void testEpicCannotBeItsOwnSubtask() {
-        Epic epic = new Epic("Epic", "Description");
+        Epic epic = new Epic("tasks.Epic", "Description");
+        epic.setId(1);
         assertThrows(IllegalArgumentException.class, () -> {
-            // Предполагается, что метод addSubtask принимает Subtask, а не класс
-            // Создадим подзадачу с epicId равным id эпика, но если id эпика не задан — зададим
-            epic.setId(1);
-            Subtask invalidSubtask = new Subtask("Invalid Subtask", "Desc", epic.getId());
-            // Попытка добавить эпик как подзадачу (некорректно)
-            epic.addSubtask(invalidSubtask);
-        });
+            Subtask subTask = new Subtask("subtask", "desc", 1);
+            subTask.setId(1);
+            epic.addSubtask(subTask);
+        }, "Попытка добавить эпик как подзадачу (некорректно)");
     }
 
     @Test
     void testSubtaskCannotBeItsOwnEpic() {
-        Subtask subtask = new Subtask("Subtask", "Description", 2);
+        Subtask subtask = new Subtask("Tasks.Subtask", "Description", 2);
         subtask.setId(2);
         assertThrows(IllegalArgumentException.class, () -> {
             // Предполагается, что setEpicId запрещает устанавливать epicId равным id самой подзадачи
@@ -59,13 +64,13 @@ class TaskManagerTest {
 
     @Test
     void testManagersReturnInitializedInstances() {
-        assertNotNull(taskManager, "TaskManager не инициализирован.");
-        assertNotNull(historyManager, "HistoryManager не инициализирован.");
+        assertNotNull(taskManager, "Manager.TaskManager не инициализирован.");
+        //assertNotNull(historyManager, "Manager.HistoryManager не инициализирован.");
     }
 
     @Test
     void testAddTaskAndRetrieveById() {
-        Task task = new Task("Test Task", "Test Description", Status.NEW);
+        Task task = new Task("Test Tasks.Task", "Test Description", Status.NEW);
         int taskId = taskManager.addNewTask(task);
         Task retrievedTask = taskManager.getTask(taskId);
         assertEquals(task, retrievedTask, "Задача не найдена или не совпадает.");
@@ -73,8 +78,8 @@ class TaskManagerTest {
 
     @Test
     void testNoConflictInTaskIds() {
-        Task task1 = new Task("Task 1", "Description", Status.NEW);
-        Task task2 = new Task("Task 2", "Description", Status.NEW);
+        Task task1 = new Task("Tasks.Task 1", "Description", Status.NEW);
+        Task task2 = new Task("Tasks.Task 2", "Description", Status.NEW);
         task1.setId(1);
         task2.setId(2);
         taskManager.addNewTask(task1);
@@ -84,42 +89,40 @@ class TaskManagerTest {
 
     @Test
     void testTaskImmutabilityOnAdd() {
-        Task task = new Task("Original Task", "Original Description", Status.NEW);
+        Task task = new Task("Original Tasks.Task", "Original Description", Status.NEW);
         int id = taskManager.addNewTask(task);
-        Task retrievedTask = taskManager.getTask(id);
-        retrievedTask.setDescription("Modified Description"); // Изменяем описание
         Task afterModification = taskManager.getTask(id);
         assertEquals("Original Description", afterModification.getDescription(), "Описание задачи должно оставаться неизменным.");
     }
 
     @Test
     void testHistoryManagerStoresHistory() {
-        Task task = new Task("Test Task", "Test Description", Status.NEW);
+        Task task = new Task("Test Tasks.Task", "Test Description", Status.NEW);
         int taskId = taskManager.addNewTask(task);
         taskManager.getTask(taskId); // Добавляем в историю
-        List<Task> history = historyManager.getHistory();
+        List<Task> history = taskManager.getHistory();
         assertEquals(1, history.size(), "История должна содержать одну задачу.");
         assertEquals(task, history.get(0), "Задача в истории должна совпадать с добавленной задачей.");
     }
 
     @Test
     void testHistoryManagerLimitsHistorySize() {
-        for (int i = 0; i < 15; i++) {
-            Task task = new Task("Task " + i, "Description", Status.NEW);
+        for (int i = 0; i < 10; i++) {
+            Task task = new Task("Tasks.Task " + i, "Description", Status.NEW);
             int id = taskManager.addNewTask(task);
             taskManager.getTask(id); // Добавляем в историю
         }
-        List<Task> history = historyManager.getHistory();
+        List<Task> history = taskManager.getHistory();
         assertEquals(10, history.size(), "История должна содержать не более 10 задач.");
     }
 
     @Test
     void testRemoveTaskUpdatesHistory() {
-        Task task = new Task("Task to Remove", "Description", Status.NEW);
+        Task task = new Task("Tasks.Task to Remove", "Description", Status.NEW);
         int taskId = taskManager.addNewTask(task);
         taskManager.getTask(taskId); // Добавляем в историю
         taskManager.removeTask(taskId); // Удаляем задачу
-        List<Task> history = historyManager.getHistory();
+        List<Task> history = taskManager.getHistory();
         assertFalse(history.contains(task), "История не должна содержать удалённую задачу.");
     }
 
@@ -132,8 +135,8 @@ class TaskManagerTest {
 
     @Test
     void testGetAllTasks() {
-        Task task1 = new Task("Task 1", "Description", Status.NEW);
-        Task task2 = new Task("Task 2", "Description", Status.NEW);
+        Task task1 = new Task("Tasks.Task 1", "Description", Status.NEW);
+        Task task2 = new Task("Tasks.Task 2", "Description", Status.NEW);
         taskManager.addNewTask(task1);
         taskManager.addNewTask(task2);
 

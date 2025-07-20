@@ -1,3 +1,8 @@
+package test;
+
+import manager.HistoryManager;
+import manager.InMemoryHistoryManager;
+import tasks.Task;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.List;
@@ -13,7 +18,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testAddTaskToHistory() {
-        Task task = new Task("Task 1", "Description");
+        Task task = new Task("Tasks.Task 1", "Description");
         task.setId(1);
         historyManager.add(task);
 
@@ -24,7 +29,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testAddDuplicateTaskToHistory() {
-        Task task = new Task("Task 1", "Description");
+        Task task = new Task("Tasks.Task 1", "Description");
         task.setId(1);
 
         historyManager.add(task);
@@ -37,7 +42,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testRemoveTaskFromHistory() {
-        Task task = new Task("Task 1", "Description");
+        Task task = new Task("Tasks.Task 1", "Description");
         task.setId(1);
         historyManager.add(task);
         historyManager.remove(1);
@@ -55,9 +60,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testAddMultipleTasksToHistory() {
-        Task task1 = new Task("Task 1", "Description");
+        Task task1 = new Task("Tasks.Task 1", "Description");
         task1.setId(1);
-        Task task2 = new Task("Task 2", "Description");
+        Task task2 = new Task("Tasks.Task 2", "Description");
         task2.setId(2);
 
         historyManager.add(task1);
@@ -71,11 +76,11 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testRemoveTaskFromMiddleOfHistory() {
-        Task task1 = new Task("Task 1", "Description");
+        Task task1 = new Task("Tasks.Task 1", "Description");
         task1.setId(1);
-        Task task2 = new Task("Task 2", "Description");
+        Task task2 = new Task("Tasks.Task 2", "Description");
         task2.setId(2);
-        Task task3 = new Task("Task 3", "Description");
+        Task task3 = new Task("Tasks.Task 3", "Description");
         task3.setId(3);
 
         historyManager.add(task1);
@@ -92,9 +97,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testRemoveTaskFromEndOfHistory() {
-        Task task1 = new Task("Task 1", "Description");
+        Task task1 = new Task("Tasks.Task 1", "Description");
         task1.setId(1);
-        Task task2 = new Task("Task 2", "Description");
+        Task task2 = new Task("Tasks.Task 2", "Description");
         task2.setId(2);
 
         historyManager.add(task1);
@@ -109,9 +114,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testRemoveTaskFromStartOfHistory() {
-        Task task1 = new Task("Task 1", "Description");
+        Task task1 = new Task("Tasks.Task 1", "Description");
         task1.setId(1);
-        Task task2 = new Task("Task 2", "Description");
+        Task task2 = new Task("Tasks.Task 2", "Description");
         task2.setId(2);
 
         historyManager.add(task1);
