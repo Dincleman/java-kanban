@@ -4,7 +4,7 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.io.BufferedWriter;
+import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets; // импорт класса со стандартом кодировки символов
