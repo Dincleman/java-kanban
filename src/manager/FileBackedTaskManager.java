@@ -7,6 +7,7 @@ import tasks.Task;
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
 import java.io.FileWriter; // импорт класса для записи символьных файлов
+import java.io.IOException; // импорт класса для исключений
 import java.nio.charset.StandardCharsets; // импорт класса со стандартом кодировки символов
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
@@ -98,17 +99,41 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
     //Метод для сохранения текущего состояния менеджера в файл
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            // Сохраняем задачи
+            // Заголовок CSV (если нужно)
+            writer.write("id,type,name,status,description,epic\n");
+            writer.newLine();
+
+            // Сохраняем
             for (Task task : getTasks()) {
-                writer.write(taskToString(task));
+                writer.write(toString(task));
+                writer.newLine();
+            }
+            for (Epic epic : getEpics()) {
+                writer.write(toString(epic));
+                writer.newLine();
+            }
+            for (Subtask subtask : getSubtasks()) {
+                writer.write(toString(subtask));
                 writer.newLine();
             }
 
+            // Сохранение истории просмотров
+            writer.newLine();
+            writer.write(historyToString(historyManager));
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка сохранения", e);
+        }
+    }
 
 
 
 
-}
+
+
+
+
+
+
 
 
 
