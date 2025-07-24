@@ -1,5 +1,6 @@
 package manager;
 
+import tasks.Subtask;
 import tasks.Task;
 
 import java.io.File;
@@ -34,6 +35,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
     }
 
     @Override
+    public int addNewSubtask(Subtask subtask) {
+        int id = addNewSubtask(Subtask subtask) {
+            super.updateSubtask();
+            save();
+        }
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        super.updateSubtask(Subtask subtask);
+        save();
+    }
+
+    @Override
+    public void removeSubtask(int id) {
+        int id = removeSubtask();
+        save();
+    }
+
+}
 
 
 
