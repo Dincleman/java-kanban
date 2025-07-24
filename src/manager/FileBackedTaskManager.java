@@ -14,9 +14,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
     private final File file;
     private String e;
 
-    private void save() { //создадим метод, кот. будет сохранять все задачи, подзадачи и эпики.
-    }
-
     public FileBackedTaskManager(File file) {
         this.file = file;
     }
@@ -129,5 +126,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
 
 
         catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+                throw new ManagerSaveException("Ошибка при сохранении в файл", e);
+            }
