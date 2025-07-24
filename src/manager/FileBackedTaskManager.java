@@ -4,7 +4,10 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
+import java.io.BufferedWriter;
 import java.io.File; //импорт класса с файлами
+import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
     private final File file;
@@ -91,6 +94,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         super.removeAllEpics();
         save();
     }
+
+    //Метод для сохранения текущего состояния менеджера в файл
+    private void save() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+            // Сохраняем задачи
+            for (Task task : getTasks()) {
+                writer.write(taskToString(task));
+                writer.newLine();
+            }
 
 
 
