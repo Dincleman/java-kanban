@@ -75,8 +75,26 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
     }
 
     @Override
-
+    public void removeAllTasks() {
+        super.removeAllTasks();
+        save();
     }
+
+    @Override
+    public void removeAllSubtasks() {
+        super.removeAllSubtasks();
+        save();
+    }
+
+    @Override
+    public void removeAllEpics() {
+        super.removeAllEpics();
+        save();
+    }
+
+
+
+}
 
 
 
