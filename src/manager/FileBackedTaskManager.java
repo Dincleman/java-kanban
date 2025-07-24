@@ -23,9 +23,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
 
     @Override
     public void updateTask(Task task) {
-        super.updateTask(task);
+        super.updateTask(task); // super потому что this нельзя присвоить новое значение, она объявлена как final
         save();
     }
+
+    @Override
+    public void remove Task(int id) {
+        super.removeTask(id);
+        save();
+    }
+}
+
 
 
 
