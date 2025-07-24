@@ -12,6 +12,8 @@ import java.nio.charset.StandardCharsets; // импорт класса со ст
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
     private final File file;
+    private String e;
+
     private void save() { //создадим метод, кот. будет сохранять все задачи, подзадачи и эпики.
     }
 
@@ -126,21 +128,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
             // Сохраняем историю
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
