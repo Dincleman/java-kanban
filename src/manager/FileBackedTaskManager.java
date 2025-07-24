@@ -15,7 +15,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         this.file = file;
     }
 
-    //переопределим методы
+    //переопределим методы с возможностью автосохранения
     @Override
     public int addNewTask(Task task) {
         int id = super.addNewTask(task);
@@ -91,6 +91,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         super.removeAllEpics();
         save();
     }
+
+
 
 
 
