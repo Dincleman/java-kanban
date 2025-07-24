@@ -7,7 +7,7 @@ import tasks.Task;
 import java.io.BufferedWriter;
 import java.io.File; //импорт класса с файлами
 import java.io.FileWriter;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.StandardCharsets; // импорт класса со стандартом кодировки символов
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
     private final File file;
