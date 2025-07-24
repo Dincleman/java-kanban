@@ -3,6 +3,7 @@ package manager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import tasks.TaskNotFoundException;
 
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
@@ -126,5 +127,5 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
 
 
         catch (IOException e) {
-                throw new ManagerSaveException("Ошибка при сохранении в файл", e);
+                throw new TaskNotFoundException("Ошибка при сохранении в файл", e);
             }
