@@ -96,34 +96,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         save();
     }
 
-    //Метод для сохранения текущего состояния менеджера в файл
+    // Метод сохранения состояния в файл
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            // Заголовок CSV (если нужно)
+            // Заголовок CSV
             writer.write("id,type,name,status,description,epic\n");
-            writer.newLine();
 
-            // Сохраняем
+            // Сохраняем задачи
             for (Task task : getTasks()) {
                 writer.write(toString(task));
                 writer.newLine();
             }
+
+            // Сохраняем эпики
             for (Epic epic : getEpics()) {
                 writer.write(toString(epic));
                 writer.newLine();
             }
+
+            // Сохраняем подзадачи
             for (Subtask subtask : getSubtasks()) {
                 writer.write(toString(subtask));
                 writer.newLine();
             }
 
-            // Сохранение истории просмотров
+            // Пустая строка как разделитель
             writer.newLine();
-            writer.write(historyToString(historyManager));
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка сохранения", e);
-        }
-    }
+
+            // Сохраняем историю
+
+
 
 
 
