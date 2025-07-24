@@ -6,7 +6,7 @@ import tasks.Task;
 
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
-import java.io.FileWriter;
+import java.io.FileWriter; // импорт класса для записи символьных файлов
 import java.nio.charset.StandardCharsets; // импорт класса со стандартом кодировки символов
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
