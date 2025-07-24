@@ -1,5 +1,6 @@
 package manager;
 
+import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
@@ -54,7 +55,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         save();
     }
 
-}
+    @Override
+    public int addNewEpic(Epic epic) {
+        int id = super.addNewEpic(epic);
+        save();
+        return id;
+    }
+
+    @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
+        save();
+    }
+
+    @Override
+    public void removeEpic(int id) {
+        super.removeEpic(id);
+        save();
+    }
+
+    @Override
+
+    }
 
 
 
