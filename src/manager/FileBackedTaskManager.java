@@ -4,7 +4,7 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.io.File;
+import java.io.File; //импорт класса с файлами
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
     private final File file;
