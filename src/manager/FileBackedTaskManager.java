@@ -10,6 +10,7 @@ import java.io.File; //импорт класса с файлами
 import java.io.FileWriter; // импорт класса для записи символьных файлов
 import java.io.IOException; // импорт класса для исключений
 import java.nio.charset.StandardCharsets; // импорт класса со стандартом кодировки символов
+import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
     private final File file;
