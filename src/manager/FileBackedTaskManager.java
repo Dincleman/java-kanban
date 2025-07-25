@@ -108,20 +108,14 @@ id,type,name,status,description,epic
 
  */
     private String toString(Task task){
-        task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
-
-        return ;
+        return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
     private String toString(Epic epic){
-        String string = task.getId() + ",EPIC," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + "," + task. ;
-
-        return string;
+        return epic.getId() + ",EPIC," + epic.getTitle() + "," + epic.getStatus() + "," + epic.getDescription() + ",";
     }
     private String toString(Subtask subTask){
-        String string = task.getId() + ",SUBTASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + "," + task. ;
-
-        return string;
-    }`
+        return subTask.getId() + ",SUBTASK," + subTask.getTitle() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId();
+    }
 
     // Метод сохранения в файл
     private void save() {
@@ -144,7 +138,7 @@ id,type,name,status,description,epic
                 writer.write(toString(subTask) + "\n");
             }
         } catch (IOException e) {
-            throw new TaskNotFoundException("Ошибка сохранения в файл", e);
+            throw new TaskNotFoundException("Ошибка сохранения в файл");
         }
     }
 }
