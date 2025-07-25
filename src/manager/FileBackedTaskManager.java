@@ -3,6 +3,7 @@ package manager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import tasks.TaskNotFoundException;
 
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
@@ -18,6 +19,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         this.file = file;
         super(history);
     }
+
+    public enum TaskType {
+        EPIC,
+        SUBTASK,
+        TASK
+    }
+
     //переопределим методы с возможностью автосохранения
     @Override
     public int addNewTask(Task task) {
@@ -119,9 +127,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка сохранения данных в файл: " + file.getAbsolutePath(), e);
+            throw new TaskNotFoundException()("Ошибка сохранения данных в файл: " + file.getAbsolutePath(), e);
         }
     }
+
+    //
 
 
 
