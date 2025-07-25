@@ -11,20 +11,12 @@ import java.io.FileWriter; // импорт класса для записи си
 import java.io.IOException; // импорт класса для исключений
 
 
-public class FileBackedTaskManager extends InMemoryTaskManager { //наследование с возможностью сохранения данных в файл
+public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
     private final File file;
-    private final HistoryManager history;
     private String e;
 
-    public FileBackedTaskManager(File file, HistoryManager history) { //конструктор
+    public FileBackedTaskManager(File file) { //конструктор
         this.file = file;
-        this.history = history;
-    }
-
-    public enum TaskType {
-        EPIC,
-        SUBTASK,
-        TASK
     }
 
     //переопределим методы с возможностью автосохранения
@@ -49,21 +41,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
 
     @Override
     public int addNewSubtask(Subtask subtask) {
-        int id = addNewSubtask(Subtask subtask); {
-            super.updateSubtask();
-            save();
-        }
+        int id = super.addNewSubtask(subtask);
+        save();
+        return id;
     }
 
     @Override
     public void updateSubtask(Subtask subtask) {
-        super.updateSubtask(Subtask subtask);
+        super.updateSubtask(subtask);
         save();
     }
 
     @Override
     public void removeSubtask(int id) {
-        int id = removeSubtask();
+        super.removeSubtask(id);
         save();
     }
 
@@ -109,7 +100,28 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         super.getAllTasks();
         save();
     }
-}
+/*
+id,type,name,status,description,epic
+1,TASK,Task1,NEW,Description task1,
+2,EPIC,Epic2,DONE,Description epic2,
+3,SUBTASK,Sub Task2,DONE,Description sub task3,2
+
+ */
+    private String toString(Task task){
+        task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
+
+        return ;
+    }
+    private String toString(Epic epic){
+        String string = task.getId() + ",EPIC," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + "," + task. ;
+
+        return string;
+    }
+    private String toString(Subtask subTask){
+        String string = task.getId() + ",SUBTASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + "," + task. ;
+
+        return string;
+    }`
 
     // Метод сохранения в файл
     private void save() {
@@ -119,27 +131,21 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
 
 
             for (Task task : getTasks()) {
-                writer.write(taskToString(task) + "\n");
+                writer.write(toString(task) + "\n");
             }
 
 
             for (Epic epic : getEpics()) {
-                writer.write(taskToString(epic) + "\n");
+                writer.write(toString(epic) + "\n");
             }
 
 
-            for (SubTask subTask : getSubtasks()) {
-                writer.write(taskToString(subTask) + "\n");
+            for (Subtask subTask : getSubtasks()) {
+                writer.write(toString(subTask) + "\n");
             }
         } catch (IOException e) {
             throw new TaskNotFoundException("Ошибка сохранения в файл", e);
         }
     }
-
-    //
-
-
-
-
-
+}
 
