@@ -3,15 +3,15 @@ package manager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.TaskNotFoundException;
+import tasks.TaskNotFoundException;???
 
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
 import java.io.FileWriter; // импорт класса для записи символьных файлов
-import java.io.IOException; // импорт класса для исключений
+import java.io.IOException; // импорт класса для исключений???
 
 
-public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
+public class FileBackedTaskManager extends InMemoryTaskManager { //наследование с возможностью сохранения данных в файл
     private final File file;
     private String e;
 
@@ -19,7 +19,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         this.file = file;
     }
 
-    //переопределим методы с возможностью автосохранения
+    //переопределение методов с возможностью автосохранения
     @Override
     public int addNewTask(Task task) {
         int id = super.addNewTask(task);
@@ -100,14 +100,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         super.getAllTasks();
         save();
     }
-/*
-id,type,name,status,description,epic
-1,TASK,Task1,NEW,Description task1,
-2,EPIC,Epic2,DONE,Description epic2,
-3,SUBTASK,Sub Task2,DONE,Description sub task3,2
 
- */
-    private String toString(Task task){
+    private String toString(Task task){ //метод сохранения задачи в строку
         return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
     private String toString(Epic epic){
