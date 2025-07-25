@@ -11,13 +11,14 @@ import java.io.FileWriter; // импорт класса для записи си
 import java.io.IOException; // импорт класса для исключений
 
 
-public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
+public class FileBackedTaskManager extends InMemoryTaskManager { //наследование с возможностью сохранения данных в файл
     private final File file;
+    private final HistoryManager history;
     private String e;
 
     public FileBackedTaskManager(File file, HistoryManager history) { //конструктор
         this.file = file;
-        super(history);
+        this.history = history;
     }
 
     public enum TaskType {
@@ -111,23 +112,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
 }
 
     // Метод сохранения в файл
-    public void save() {
-        File file = new File("tasks.csv");
+    private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-            for (Task task : getAllTasks()) {
-                writer.write(task.toString());
-                writer.newLine();
+
+            writer.write("id,type,name,priority,description,epic\n");
+
+
+            for (Task task : getTasks()) {
+                writer.write(taskToString(task) + "\n");
             }
-            for (Subtask subtask : getAllSubtasks()) {
-                writer.write(subtask.toString());
-                writer.newLine();
+
+
+            for (Epic epic : getEpics()) {
+                writer.write(taskToString(epic) + "\n");
             }
-            for (Epic epic : getAllEpics()) {
-                writer.write(epic.toString());
-                writer.newLine();
+
+
+            for (SubTask subTask : getSubtasks()) {
+                writer.write(taskToString(subTask) + "\n");
             }
         } catch (IOException e) {
-            throw new TaskNotFoundException()("Ошибка сохранения данных в файл: " + file.getAbsolutePath(), e);
+            throw new TaskNotFoundException("Ошибка сохранения в файл", e);
         }
     }
 
