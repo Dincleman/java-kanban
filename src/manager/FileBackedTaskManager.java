@@ -97,11 +97,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
     }
 
     // Метод сохранения состояния в файл
+    // Метод для сохранения текущего состояния менеджера в файл
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            // Заголовок CSV
-            writer.write("id,type,name,status,description,epic\n");
-
             // Сохраняем задачи
             for (Task task : getTasks()) {
                 writer.write(toString(task));
@@ -120,12 +118,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
                 writer.newLine();
             }
 
-            // Пустая строка как разделитель
-            writer.newLine();
-
-            // Сохраняем историю
+            // Сохраняем историю просмотров?
 
 
-        catch (IOException e) {
-                throw new TaskNotFoundException("Ошибка при сохранении в файл", e);
-            }
+        } catch (IOException e) {
+            throw new TaskNotFoundException("Ошибка при сохранении в файл", e);
+        }
+    }
