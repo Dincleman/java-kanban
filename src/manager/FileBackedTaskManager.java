@@ -15,7 +15,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
     private final File file;
     private String e;
 
-    public FileBackedTaskManager(File file) {
+    public FileBackedTaskManager(File file) { //конструктор
         this.file = file;
     }
 
@@ -96,7 +96,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         save();
     }
 
-    // Метод сохранения состояния в файл
     // Метод для сохранения текущего состояния менеджера в файл
     private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
@@ -125,3 +124,30 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
             throw new TaskNotFoundException("Ошибка при сохранении в файл", e);
         }
     }
+
+    // Метод для преобразования задачи в строку
+    private String taskToString() {
+        return taskToString(null);
+    }
+
+    // Метод для преобразования задачи в строку!!!
+    private String taskToString(Task task) {
+        return task.getId() + "," + task.getType() + "," + task.getName() + "," +
+                task.getStatus() + "," + task.getDescription();
+    }
+
+
+//Метод для преобразования истории в строку
+private String historyToString(List<Task> history) {
+    StringBuilder sb = new StringBuilder();  // 1. Создаём временный объект для сборки строки
+    for (Task task : history) {              // 2. Перебираем задачи из истории
+        if (sb.length() != 0) {              // 3. Если строка не пуста, добавляем запятую
+            sb.append(",");
+        }
+        sb.append(task.getId());             // 4. Добавляем ID задачи
+    }
+    return sb.toString();                    // 5. Возвращаем итоговую строку
+}
+
+
+
