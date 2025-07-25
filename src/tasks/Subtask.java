@@ -1,0 +1,31 @@
+package tasks;
+
+public class Subtask extends Task {
+    private int epicId;
+
+    public Subtask(String title, String description, int epicId) {
+        super(title, description);
+        setEpicId(epicId);
+    }
+
+    public int getEpicId() {
+        return epicId;
+    }
+
+    public void setEpicId(int epicId) {
+        if (epicId == getId()) {
+            throw new IllegalArgumentException("Подзадача не может быть своим эпиком");
+        }
+        this.epicId = epicId;
+    }
+
+    @Override
+    public String toString() {
+        return "Tasks.Subtask{" +
+                "id=" + getId() +
+                ", title='" + getTitle() + '\'' +
+                ", status=" + getStatus() +
+                ", epicId=" + epicId +
+                '}';
+    }
+}
