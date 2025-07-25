@@ -3,23 +3,21 @@ package manager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.TaskNotFoundException;
 
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
 import java.io.FileWriter; // импорт класса для записи символьных файлов
 import java.io.IOException; // импорт класса для исключений
-import java.nio.charset.StandardCharsets; // импорт класса со стандартом кодировки символов
-import java.util.List;
+
 
 public class FileBackedTaskManager extends InMemoryTaskManager { // наследование с возможностью сохранения данных в файл
     private final File file;
     private String e;
 
-    public FileBackedTaskManager(File file) { //конструктор
+    public FileBackedTaskManager(File file, HistoryManager history) { //конструктор
         this.file = file;
+        super(history);
     }
-
     //переопределим методы с возможностью автосохранения
     @Override
     public int addNewTask(Task task) {
@@ -97,59 +95,36 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
         save();
     }
 
-    // Метод сохранения в файл
-    private void save() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            // Сохраняем задачи
-            for (Task task : super.getTasks()) {
-                writer.write(taskToString(task));
-                writer.newLine();
-            }
-
-            // Сохраняем эпики
-            for (Epic epic : super.getEpics()) {
-                writer.write(taskToString(epic));
-                writer.newLine();
-            }
-
-            // Сохраняем подзадачи
-            for (Subtask subtask : super.getSubtasks()) {
-                writer.write(taskToString(subtask));
-                writer.newLine();
-            }
-
-            // Сохраняем историю
-            writer.newLine();
-            writer.write(historyToString(super.getHistory()));
-
-        } catch (IOException e) {
-            throw new TaskNotFoundException("Ошибка при сохранении в файл", e);
-        }
+    @Override
+    public void getAllTasks() {
+        super.getAllTasks();
+        save();
     }
-
-    // Метод для преобразования задачи в строку
-    private String taskToString() {
-        return taskToString(null);
-    }
-
-    // Метод для преобразования задачи в строку!!!
-    private String taskToString(Task task) {
-        return task.getId() + "," + task.getType() + "," + task.getName() + "," +
-                task.getStatus() + "," + task.getDescription();
-    }
-
-
-//Метод для преобразования истории в строку
-private String historyToString(List<Task> history) {
-    StringBuilder sb = new StringBuilder();  // 1. Создаём временный объект для сборки строки
-    for (Task task : history) {              // 2. Перебираем задачи из истории
-        if (sb.length() != 0) {              // 3. Если строка не пуста, добавляем запятую
-            sb.append(",");
-        }
-        sb.append(task.getId());             // 4. Добавляем ID задачи
-    }
-    return sb.toString();                    // 5. Возвращаем итоговую строку
 }
+
+    // Метод сохранения в файл
+    public void save() {
+        File file = new File("tasks.csv");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (Task task : getAllTasks()) {
+                writer.write(task.toString());
+                writer.newLine();
+            }
+            for (Subtask subtask : getAllSubtasks()) {
+                writer.write(subtask.toString());
+                writer.newLine();
+            }
+            for (Epic epic : getAllEpics()) {
+                writer.write(epic.toString());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка сохранения данных в файл: " + file.getAbsolutePath(), e);
+        }
+    }
+
+
+
 
 
 

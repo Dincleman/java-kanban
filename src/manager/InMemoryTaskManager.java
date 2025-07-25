@@ -192,7 +192,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Task> getAllTasks() {
+    public void getAllTasks() {
         List<Task> allTasks = new ArrayList<>();
         allTasks.addAll(tasks.values());
         allTasks.addAll(subtasks.values());
@@ -200,3 +200,4 @@ public class InMemoryTaskManager implements TaskManager {
         return allTasks;
     }
 }
+
