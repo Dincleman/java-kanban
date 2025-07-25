@@ -34,7 +34,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { // наслед
     }
 
     @Override
-    public void remove Task(int id) {
+    public void removeTask(int id) {
         super.removeTask(id);
         save();
     }
