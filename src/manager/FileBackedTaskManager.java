@@ -102,13 +102,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         save();
     }
 
-    private String toString(Task task){ //метод сохранения задачи в строку
+    private String toString(Task task) { //метод сохранения задачи в строку
         return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
-    private String toString(Epic epic){
+
+    private String toString(Epic epic) {
         return epic.getId() + ",EPIC," + epic.getTitle() + "," + epic.getStatus() + "," + epic.getDescription() + ",";
     }
-    private String toString(Subtask subTask){
+
+    private String toString(Subtask subTask) {
         return subTask.getId() + ",SUBTASK," + subTask.getTitle() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId();
     }
 
@@ -152,7 +154,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
             int id = Integer.parseInt(fields[0].trim());
             String type = fields[1].trim();
             String title = fields[2].trim();
-            tasks.Status status = Task.Status.valueOf(fields[3].trim());
+            Status status = Task.Status.valueOf(fields[3].trim());
             String description = fields[4].trim();
 
             switch (type) { //создание объекта в зависимости от типа
@@ -186,4 +188,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
             throw new IllegalArgumentException("Ошибка парсинга данных задачи", e);
         }
 
+        //чтение файлов
+        public static FileBackedTaskManager loadFromFile (File file){
+            if (file == null) {
+                System.out.println("Файл автосохранения не был передан!");
+                return null;
+            }
 
+        }
+    }
+}
