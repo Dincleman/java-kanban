@@ -37,7 +37,7 @@ class FileBackedTaskManagerTest {
         // Проверяем, что всё пусто
         assertTrue(loadedManager.getAllTasks());
         assertTrue(loadedManager.getEpics().isEmpty());
-        assertTrue(loadedManager.getAllTasks().isEmpty());
+        assertTrue(loadedManager.getAllTasks());
         assertTrue(loadedManager.getHistory().isEmpty());
     }
 
