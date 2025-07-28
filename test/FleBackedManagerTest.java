@@ -61,7 +61,7 @@ class FileBackedTaskManagerTest {
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
         // Проверяем, что задачи восстановились
-        assertEquals(1, loadedManager.getAllTasks().size());
+        assertEquals(1, loadedManager.getAllTasks().size()); //ожидаемое значение совпадает с фактическим
         assertEquals(1, loadedManager.getAllEpics().size());
         assertEquals(1, loadedManager.getAllSubtasks().size());
 

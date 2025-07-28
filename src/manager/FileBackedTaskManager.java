@@ -1,5 +1,8 @@
 package manager;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -9,7 +12,10 @@ import tasks.TaskNotFoundException;
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
 import java.io.FileWriter; // импорт класса для записи символьных файлов
-import java.io.IOException; // импорт класса для исключений???
+import java.io.IOException; // импорт класса для исключений
+//private static final String HISTORY_DIR = "src/history";
+//private static final String AUTO_SAVE_FILE = "autoSave.csv";
+//private final File autoSaveFile;
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager { //наследование с возможностью сохранения данных в файл
@@ -102,15 +108,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         save();
     }
 
-    private String toString(Task task) { //метод сохранения задачи в строку
+    private String toString(@NotNull Task task) { //метод сохранения задачи в строку
         return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
 
-    private String toString(Epic epic) {
+    private String toString(@NotNull Epic epic) {
         return epic.getId() + ",EPIC," + epic.getTitle() + "," + epic.getStatus() + "," + epic.getDescription() + ",";
     }
 
-    private String toString(Subtask subTask) {
+    private String toString(@NotNull Subtask subTask) {
         return subTask.getId() + ",SUBTASK," + subTask.getTitle() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId();
     }
 
@@ -140,7 +146,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
     }
 
     // Метод создания задачи из строки
-    private Task fromString(String value) {
+    @Contract("null -> fail")
+    private @Nullable Task fromString(String value) {
         if (value == null || value.isEmpty()) { //проверка входных данных
             throw new IllegalArgumentException("Строка не может быть пустой");
         }
@@ -190,12 +197,11 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
 
         //чтение файлов
         File file1 = file;
-        public static FileBackedTaskManager loadFromFile (File file1){
-            if (file1 == null) {
-                System.out.println("Файл автосохранения не был передан!");
-                return null;
-            }
-
+        (File file1)
+        if (file1 == null) {
+            System.out.println("Файл автосохранения не был передан!");
+            return null;
         }
+
     }
 }
