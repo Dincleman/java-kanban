@@ -3,7 +3,8 @@ package manager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.TaskNotFoundException;???
+import tasks.Status;
+import tasks.TaskNotFoundException;
 
 import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
 import java.io.File; //импорт класса с файлами
@@ -135,5 +136,54 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
             throw new TaskNotFoundException("Ошибка сохранения в файл");
         }
     }
-}
+
+    // Метод создания задачи из строки
+    private Task fromString(String value) {
+        if (value == null || value.isEmpty()) { //проверка входных данных
+            throw new IllegalArgumentException("Строка не может быть пустой");
+        }
+
+        String[] fields = value.split(","); //разделение строки на поля
+        if (fields.length < 5) {
+            throw new IllegalArgumentException("Некорректный формат строки - недостаточно полей");
+        }
+
+        try { //парсинг полей
+            int id = Integer.parseInt(fields[0].trim());
+            String type = fields[1].trim();
+            String title = fields[2].trim();
+            tasks.Status status = Task.Status.valueOf(fields[3].trim());
+            String description = fields[4].trim();
+
+            switch (type) { //создание объекта в зависимости от типа
+                case "TASK":
+                    Task task = new Task(title, description, status);
+                    task.setId(id);
+                    return task;
+
+                case "EPIC":
+                    Epic epic = new Epic(title, description);
+                    epic.setId(id);
+                    epic.setStatus(status); // Устанавливаем статус, т.к. Epic наследует Task
+                    return epic;
+
+                case "SUBTASK":
+                    if (fields.length < 6) {
+                        throw new IllegalArgumentException("Для подзадачи отсутствует epicId");
+                    }
+                    int epicId = Integer.parseInt(fields[5].trim());
+                    Subtask subtask = new Subtask(title, description, epicId);
+                    subtask.setId(id);
+                    subtask.setStatus(status); // Устанавливаем статус, т.к. Subtask наследует Task
+                    return subtask;
+
+                default:
+                    throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
+            }
+        } catch (NumberFormatException e) { //если ошибки
+            throw new IllegalArgumentException("Некорректный числовой формат в данных", e);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Ошибка парсинга данных задачи", e);
+        }
+
 
