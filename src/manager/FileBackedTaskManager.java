@@ -148,7 +148,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
 
     // Метод создания задачи из строки
     @Contract("null -> fail")
-    private @Nullable Task fromString(String value) {
+    @Nullable
+    public Task fromString(String value) {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("Строка не может быть пустой");
         }
