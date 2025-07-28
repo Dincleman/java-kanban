@@ -108,7 +108,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         save();
     }
 
-    private String toString(@NotNull Task task) { //метод сохранения задачи в строку
+    private String toString(@NotNull Task task) { //метод сохранения задачи в строку. допустимы ли аннотации @NotNull? по идее на выполнение кода они не влияют
+
         return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
 
