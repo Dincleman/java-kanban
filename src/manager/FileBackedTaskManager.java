@@ -115,7 +115,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
     }
 
     // Метод сохранения в файл
-    private void save() {
+    public void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
             writer.write("id,type,name,priority,description,epic\n");
@@ -189,8 +189,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         }
 
         //чтение файлов
-        public static FileBackedTaskManager loadFromFile (File file){
-            if (file == null) {
+        File file1 = file;
+        public static FileBackedTaskManager loadFromFile (File file1){
+            if (file1 == null) {
                 System.out.println("Файл автосохранения не был передан!");
                 return null;
             }
