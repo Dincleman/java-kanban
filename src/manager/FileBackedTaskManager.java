@@ -13,6 +13,7 @@ import java.io.BufferedWriter; // импорт класса эффективно
 import java.io.File; //импорт класса с файлами
 import java.io.FileWriter; // импорт класса для записи символьных файлов
 import java.io.IOException; // импорт класса для исключений
+import java.util.List;
 //private static final String HISTORY_DIR = "src/history";
 //private static final String AUTO_SAVE_FILE = "autoSave.csv";
 //private final File autoSaveFile;
@@ -24,6 +25,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
 
     public FileBackedTaskManager(File file) { //конструктор
         this.file = file;
+    }
+
+    public static FileBackedTaskManager loadFromFile(File tempFile) {
+        return new FileBackedTaskManager(tempFile);
     }
 
     //переопределение методов с возможностью автосохранения
@@ -103,9 +108,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
     }
 
     @Override
-    public void getAllTasks() {
+    public List<Task> getAllTasks() {
         super.getAllTasks();
         save();
+        return null;
     }
 
     private String toString(@NotNull Task task) { //метод сохранения задачи в строку. допустимы ли аннотации @NotNull? по идее на выполнение кода они не влияют

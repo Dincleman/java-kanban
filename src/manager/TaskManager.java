@@ -52,5 +52,5 @@ public interface TaskManager {
     void removeAllEpics();
 
     // Метод для получения всех задач (включая задачи, подзадачи и эпики)
-    void getAllTasks();
+    List<Task> getAllTasks();
 }
