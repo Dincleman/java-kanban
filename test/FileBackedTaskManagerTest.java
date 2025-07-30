@@ -1,5 +1,4 @@
-package manager;
-
+import manager.FileBackedTaskManager;
 import org.junit.jupiter.api.*;
 import tasks.Epic;
 import tasks.Status;
@@ -78,7 +77,7 @@ class FileBackedTaskManagerTest {
     @Test
     void testUpdateTaskSavesToFile() throws IOException {
         Task task = new Task("Old title", "Old desc", Status.NEW);
-        int id = manager.addNewTask(task);
+        manager.addNewTask(task);
 
         task.setTitle("New title");
         task.setDescription("New desc");
@@ -152,18 +151,4 @@ class FileBackedTaskManagerTest {
         assertThrows(IllegalArgumentException.class, () -> manager.fromString(null));
         assertThrows(IllegalArgumentException.class, () -> manager.fromString(""));
     }
-
-    /*@Test
-    void testSaveThrowsTaskNotFoundExceptionOnIOException() {
-        // Создадим FileBackedTaskManager с файлом, который нельзя записать
-        File unwritableFile = new File("/root/unwritable.csv");
-        FileBackedTaskManager badManager = new FileBackedTaskManager(unwritableFile);
-
-        Task task = new Task("Test", "Desc", Status.NEW);
-
-        badManager.addNewTask(task); // save вызывается внутри addNewTask
-
-        // Но в реальной среде этот тест может не сработать из-за прав доступа,
-        // поэтому можно протестировать save() напрямую с моками или вручную.
-    }*/
 }
