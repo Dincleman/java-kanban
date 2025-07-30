@@ -1,8 +1,8 @@
 package manager;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+//import org.jetbrains.annotations.Contract;
+//import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.Nullable;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -114,16 +114,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         return null;
     }
 
-    private String toString(@NotNull Task task) { //метод сохранения задачи в строку. допустимы ли аннотации @NotNull? по идее на выполнение кода они не влияют
+    private String toString(Task task) { //метод сохранения задачи в строку. допустимы ли аннотации @NotNull? по идее на выполнение кода они не влияют
 
         return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
 
-    private String toString(@NotNull Epic epic) {
+    private String toString(Epic epic) {
         return epic.getId() + ",EPIC," + epic.getTitle() + "," + epic.getStatus() + "," + epic.getDescription() + ",";
     }
 
-    private String toString(@NotNull Subtask subTask) {
+    private String toString(Subtask subTask) {
         return subTask.getId() + ",SUBTASK," + subTask.getTitle() + "," + subTask.getStatus() + "," + subTask.getDescription() + "," + subTask.getEpicId();
     }
 
@@ -153,8 +153,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
     }
 
     // Метод создания задачи из строки
-    @Contract("null -> fail")
-    @Nullable
     public Task fromString(String value) {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("Строка не может быть пустой");
