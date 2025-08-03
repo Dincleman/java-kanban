@@ -1,120 +1,121 @@
 package manager;
 
-//import org.jetbrains.annotations.Contract;
-//import org.jetbrains.annotations.NotNull;
-//import org.jetbrains.annotations.Nullable;
+
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import tasks.Status;
 import tasks.TaskNotFoundException;
 
-import java.io.BufferedWriter; // импорт класса эффективной записи символьного текста в поток вывода
-import java.io.File; //импорт класса с файлами
-import java.io.FileWriter; // импорт класса для записи символьных файлов
-import java.io.IOException; // импорт класса для исключений
+import java.io.*;
 import java.util.List;
-//private static final String HISTORY_DIR = "src/history";
-//private static final String AUTO_SAVE_FILE = "autoSave.csv";
-//private final File autoSaveFile;
+
 
 
 public class FileBackedTaskManager extends InMemoryTaskManager { //наследование с возможностью сохранения данных в файл
     private final File file;
-    private String e;
 
     public FileBackedTaskManager(File file) { //конструктор
         this.file = file;
     }
 
-    public static FileBackedTaskManager loadFromFile(File tempFile) {
+    public static FileBackedTaskManager loadFromFile(File tempFile) throws IOException {
+        FileReader reader = new FileReader(tempFile.getName());
+        BufferedReader br = new BufferedReader(reader);
+        //FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(tempFile);
+
+        while (br.ready()) {
+            String line = br.readLine();
+            Task tempTask = fromString(line);
+            //fileBackedTaskManager.super.addNewTask(tempTask);
+        }
+
+        br.close();
+
+
+
         return new FileBackedTaskManager(tempFile);
     }
 
     //переопределение методов с возможностью автосохранения
     @Override
-    public int addNewTask(Task task) {
+    public int addNewTask(Task task) throws ManagerSaveException {
         int id = super.addNewTask(task);
         save();
         return id;
     }
 
     @Override
-    public void updateTask(Task task) {
-        super.updateTask(task); // super потому что this нельзя присвоить новое значение, она объявлена как final
+    public void updateTask(Task task) throws ManagerSaveException {
+        super.updateTask(task); // super потому что вызывается родительский метод (поясняющий комментарий)
         save();
     }
 
     @Override
-    public void removeTask(int id) {
+    public void removeTask(int id) throws ManagerSaveException {
         super.removeTask(id);
         save();
     }
 
     @Override
-    public int addNewSubtask(Subtask subtask) {
+    public int addNewSubtask(Subtask subtask) throws ManagerSaveException {
         int id = super.addNewSubtask(subtask);
         save();
         return id;
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
+    public void updateSubtask(Subtask subtask) throws ManagerSaveException {
         super.updateSubtask(subtask);
         save();
     }
 
     @Override
-    public void removeSubtask(int id) {
+    public void removeSubtask(int id) throws ManagerSaveException {
         super.removeSubtask(id);
         save();
     }
 
     @Override
-    public int addNewEpic(Epic epic) {
+    public int addNewEpic(Epic epic) throws ManagerSaveException {
         int id = super.addNewEpic(epic);
         save();
         return id;
     }
 
     @Override
-    public void updateEpic(Epic epic) {
+    public void updateEpic(Epic epic) throws ManagerSaveException {
         super.updateEpic(epic);
         save();
     }
 
     @Override
-    public void removeEpic(int id) {
+    public void removeEpic(int id) throws ManagerSaveException {
         super.removeEpic(id);
         save();
     }
 
     @Override
-    public void removeAllTasks() {
+    public void removeAllTasks() throws ManagerSaveException {
         super.removeAllTasks();
         save();
     }
 
     @Override
-    public void removeAllSubtasks() {
+    public void removeAllSubtasks() throws ManagerSaveException {
         super.removeAllSubtasks();
         save();
     }
 
     @Override
-    public void removeAllEpics() {
+    public void removeAllEpics() throws ManagerSaveException {
         super.removeAllEpics();
         save();
     }
 
-    @Override
-    public List<Task> getAllTasks() {
-        super.getAllTasks();
-        save();
-        return null;
-    }
 
-    private String toString(Task task) { //метод сохранения задачи в строку. допустимы ли аннотации @NotNull? по идее на выполнение кода они не влияют
+
+    private String toString(Task task) { //метод сохранения задачи в строку
 
         return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
@@ -128,7 +129,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
     }
 
     // Метод сохранения в файл
-    public void save() {
+    private void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
 
             writer.write("id,type,name,priority,description,epic\n");
@@ -147,13 +148,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
             for (Subtask subTask : getSubtasks()) {
                 writer.write(toString(subTask) + "\n");
             }
-        } catch (IOException e) {
-            throw new TaskNotFoundException("Ошибка сохранения в файл");
+        } catch (Exception e) {
+            throw new ManagerSaveException("Ошибка сохранения в файл", e);
         }
     }
 
     // Метод создания задачи из строки
-    public Task fromString(String value) {
+    public static Task fromString(String value) throws ManagerSaveException {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("Строка не может быть пустой");
         }
@@ -195,10 +196,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
                 default:
                     throw new IllegalArgumentException("Неизвестный тип задачи: " + type);
             }
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Некорректный числовой формат в данных", e);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Ошибка парсинга данных задачи", e);
+        } catch (Exception e) {
+            throw new ManagerSaveException("Некорректный числовой формат в данных", e);
         }
     }
 }
