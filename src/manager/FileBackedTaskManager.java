@@ -1,6 +1,5 @@
 package manager;
 
-
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
@@ -8,36 +7,53 @@ import tasks.Status;
 import tasks.TaskNotFoundException;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.List;
 
-
-
-public class FileBackedTaskManager extends InMemoryTaskManager { //наследование с возможностью сохранения данных в файл
+public class FileBackedTaskManager extends InMemoryTaskManager {
     private final File file;
 
-    public FileBackedTaskManager(File file) { //конструктор
+    public FileBackedTaskManager(File file) {
         this.file = file;
     }
 
-    public static FileBackedTaskManager loadFromFile(File tempFile) throws IOException {
-        FileReader reader = new FileReader(tempFile.getName());
-        BufferedReader br = new BufferedReader(reader);
-        //FileBackedTaskManager fileBackedTaskManager = new FileBackedTaskManager(tempFile);
-
-        while (br.ready()) {
-            String line = br.readLine();
-            Task tempTask = fromString(line);
-            //fileBackedTaskManager.super.addNewTask(tempTask);
-        }
-
-        br.close();
-
-
-
-        return new FileBackedTaskManager(tempFile);
+    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        manager.loadFromFile();
+        return manager;
     }
 
-    //переопределение методов с возможностью автосохранения
+    private void loadFromFile() throws ManagerSaveException {
+        try {
+            String content = Files.readString(file.toPath());
+            String[] lines = content.split("\n");
+
+            if (lines.length <= 1) {
+                return; // Если нет задач, просто выходим
+            }
+
+            // Игнорируем заголовок
+            for (int i = 1; i < lines.length; i++) {
+                if (lines[i].isEmpty()) {
+                    continue; // Пропускаем пустые строки
+                }
+
+                Task task = fromString(lines[i]);
+
+                if (task instanceof Epic) {
+                    addNewEpic((Epic) task);
+                } else if (task instanceof Subtask) {
+                    addNewSubtask((Subtask) task);
+                } else {
+                    addNewTask(task);
+                }
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при загрузке из файла", e);
+        }
+    }
+
+    // Переопределение методов с возможностью автосохранения
     @Override
     public int addNewTask(Task task) throws ManagerSaveException {
         int id = super.addNewTask(task);
@@ -47,7 +63,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
 
     @Override
     public void updateTask(Task task) throws ManagerSaveException {
-        super.updateTask(task); // super потому что вызывается родительский метод (поясняющий комментарий)
+        super.updateTask(task);
         save();
     }
 
@@ -113,10 +129,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         save();
     }
 
-
-
-    private String toString(Task task) { //метод сохранения задачи в строку
-
+    private String toString(Task task) {
         return task.getId() + ",TASK," + task.getTitle() + "," + task.getStatus() + "," + task.getDescription() + ",";
     }
 
@@ -131,19 +144,15 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
     // Метод сохранения в файл
     private void save() throws ManagerSaveException {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
-
-            writer.write("id,type,name,priority,description,epic\n");
-
+            writer.write("id,type,name,status,description,epic\n");
 
             for (Task task : getTasks()) {
                 writer.write(toString(task) + "\n");
             }
 
-
             for (Epic epic : getEpics()) {
                 writer.write(toString(epic) + "\n");
             }
-
 
             for (Subtask subTask : getSubtasks()) {
                 writer.write(toString(subTask) + "\n");
@@ -168,7 +177,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
             int id = Integer.parseInt(fields[0].trim());
             String type = fields[1].trim();
             String title = fields[2].trim();
-            Status status = Status.valueOf(fields[3].trim()); // Исправлено!
+            Status status = Status.valueOf(fields[3].trim());
             String description = fields[4].trim();
 
             switch (type) {
@@ -201,9 +210,3 @@ public class FileBackedTaskManager extends InMemoryTaskManager { //наслед�
         }
     }
 }
-
-
-
-
-
-

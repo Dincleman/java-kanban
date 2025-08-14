@@ -1,4 +1,5 @@
 import manager.InMemoryTaskManager;
+import manager.ManagerSaveException;
 import manager.TaskManager;
 
 import tasks.Epic;
@@ -6,7 +7,7 @@ import tasks.Subtask;
 import tasks.Task;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ManagerSaveException {
         // Создаем менеджер задач
         TaskManager taskManager = new InMemoryTaskManager();
 
