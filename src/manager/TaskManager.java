@@ -39,7 +39,7 @@ public interface TaskManager {
 
     void updateSubtask(Subtask subtask);
 
-    void updateEpic(Epic epic) ;
+    void updateEpic(Epic epic);
 
     // История
     List<Task> getHistory();
