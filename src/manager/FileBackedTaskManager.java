@@ -17,13 +17,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public static FileBackedTaskManager loadFromFile(File file) throws ManagerSaveException {
+    public static FileBackedTaskManager loadFromFile(File file)  {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
         manager.loadFromFile();
         return manager;
     }
 
-    private void loadFromFile() throws ManagerSaveException {
+    private void loadFromFile()  {
         try {
             String content = Files.readString(file.toPath());
             String[] lines = content.split("\n");
@@ -55,76 +55,76 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     // Переопределение методов с возможностью автосохранения
     @Override
-    public int addNewTask(Task task) throws ManagerSaveException {
+    public int addNewTask(Task task)  {
         int id = super.addNewTask(task);
         save();
         return id;
     }
 
     @Override
-    public void updateTask(Task task) throws ManagerSaveException {
+    public void updateTask(Task task)  {
         super.updateTask(task);
         save();
     }
 
     @Override
-    public void removeTask(int id) throws ManagerSaveException {
+    public void removeTask(int id)  {
         super.removeTask(id);
         save();
     }
 
     @Override
-    public int addNewSubtask(Subtask subtask) throws ManagerSaveException {
+    public int addNewSubtask(Subtask subtask)  {
         int id = super.addNewSubtask(subtask);
         save();
         return id;
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) throws ManagerSaveException {
+    public void updateSubtask(Subtask subtask)  {
         super.updateSubtask(subtask);
         save();
     }
 
     @Override
-    public void removeSubtask(int id) throws ManagerSaveException {
+    public void removeSubtask(int id)  {
         super.removeSubtask(id);
         save();
     }
 
     @Override
-    public int addNewEpic(Epic epic) throws ManagerSaveException {
+    public int addNewEpic(Epic epic)  {
         int id = super.addNewEpic(epic);
         save();
         return id;
     }
 
     @Override
-    public void updateEpic(Epic epic) throws ManagerSaveException {
+    public void updateEpic(Epic epic)  {
         super.updateEpic(epic);
         save();
     }
 
     @Override
-    public void removeEpic(int id) throws ManagerSaveException {
+    public void removeEpic(int id)  {
         super.removeEpic(id);
         save();
     }
 
     @Override
-    public void removeAllTasks() throws ManagerSaveException {
+    public void removeAllTasks()  {
         super.removeAllTasks();
         save();
     }
 
     @Override
-    public void removeAllSubtasks() throws ManagerSaveException {
+    public void removeAllSubtasks()  {
         super.removeAllSubtasks();
         save();
     }
 
     @Override
-    public void removeAllEpics() throws ManagerSaveException {
+    public void removeAllEpics()  {
         super.removeAllEpics();
         save();
     }
@@ -142,7 +142,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // Метод сохранения в файл
-    private void save() throws ManagerSaveException {
+    private void save()  {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             writer.write("id,type,name,status,description,epic\n");
 
@@ -163,7 +163,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     // Метод создания задачи из строки
-    public static Task fromString(String value) throws ManagerSaveException {
+    public static Task fromString(String value)  {
         if (value == null || value.isEmpty()) {
             throw new IllegalArgumentException("Строка не может быть пустой");
         }
