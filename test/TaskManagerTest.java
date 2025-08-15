@@ -68,7 +68,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void testAddTaskAndRetrieveById() throws ManagerSaveException {
+    void testAddTaskAndRetrieveById() {
         Task task = new Task("Test Tasks.Task", "Test Description", Status.NEW);
         int taskId = taskManager.addNewTask(task);
         Task retrievedTask = taskManager.getTask(taskId);
@@ -76,7 +76,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void testNoConflictInTaskIds() throws ManagerSaveException {
+    void testNoConflictInTaskIds() {
         Task task1 = new Task("Tasks.Task 1", "Description", Status.NEW);
         Task task2 = new Task("Tasks.Task 2", "Description", Status.NEW);
         task1.setId(1);
@@ -87,7 +87,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void testTaskImmutabilityOnAdd() throws ManagerSaveException {
+    void testTaskImmutabilityOnAdd() {
         Task task = new Task("Original Tasks.Task", "Original Description", Status.NEW);
         int id = taskManager.addNewTask(task);
         Task afterModification = taskManager.getTask(id);
@@ -95,7 +95,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void testHistoryManagerStoresHistory() throws ManagerSaveException {
+    void testHistoryManagerStoresHistory() {
         Task task = new Task("Test Tasks.Task", "Test Description", Status.NEW);
         int taskId = taskManager.addNewTask(task);
         taskManager.getTask(taskId); // Добавляем в историю
@@ -105,7 +105,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void testHistoryManagerLimitsHistorySize() throws ManagerSaveException {
+    void testHistoryManagerLimitsHistorySize() {
         for (int i = 0; i < 10; i++) {
             Task task = new Task("Tasks.Task " + i, "Description", Status.NEW);
             int id = taskManager.addNewTask(task);
@@ -116,7 +116,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void testRemoveTaskUpdatesHistory() throws ManagerSaveException {
+    void testRemoveTaskUpdatesHistory() {
         Task task = new Task("Tasks.Task to Remove", "Description", Status.NEW);
         int taskId = taskManager.addNewTask(task);
         taskManager.getTask(taskId); // Добавляем в историю
@@ -133,7 +133,7 @@ class TaskManagerTest {
     }
 
     @Test
-    void testGetAllTasks() throws ManagerSaveException {
+    void testGetAllTasks() {
         Task task1 = new Task("Tasks.Task 1", "Description", Status.NEW);
         Task task2 = new Task("Tasks.Task 2", "Description", Status.NEW);
         taskManager.addNewTask(task1);

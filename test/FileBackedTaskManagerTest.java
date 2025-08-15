@@ -1,5 +1,4 @@
 import manager.FileBackedTaskManager;
-import manager.ManagerSaveException;
 import org.junit.jupiter.api.*;
 import tasks.Epic;
 import tasks.Status;
@@ -29,7 +28,7 @@ class FileBackedTaskManagerTest {
     }
 
     @AfterEach
-    void tearDown() throws ManagerSaveException {
+    void tearDown() {
         // Очистим менеджер после каждого теста
         manager.removeAllTasks();
         manager.removeAllSubtasks();
@@ -104,7 +103,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void testFromStringValidTask() throws ManagerSaveException {
+    void testFromStringValidTask() {
         String line = "1,TASK,Task title,NEW,Description,";
         Task task = manager.fromString(line);
 
@@ -116,7 +115,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void testFromStringValidEpic() throws ManagerSaveException {
+    void testFromStringValidEpic() {
         String line = "2,EPIC,Epic title,DONE,Description,";
         Epic epic = (Epic) manager.fromString(line);
 
@@ -128,7 +127,7 @@ class FileBackedTaskManagerTest {
     }
 
     @Test
-    void testFromStringValidSubtask() throws ManagerSaveException {
+    void testFromStringValidSubtask() {
         String line = "3,SUBTASK,Subtask title,IN_PROGRESS,Description,2";
         Subtask subtask = (Subtask) manager.fromString(line);
 
