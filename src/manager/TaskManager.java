@@ -53,4 +53,9 @@ public interface TaskManager {
 
     // Метод для получения всех задач (включая задачи, подзадачи и эпики)
     List<Task> getAllTasks();
+
+    //
+    List<Task> getPrioritizedTasks();
+
+
 }

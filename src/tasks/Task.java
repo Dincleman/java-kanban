@@ -10,7 +10,7 @@ public class Task {
     private Status status;
     private Duration duration;
     private LocalDateTime startTime;
-    private Object endTime;
+    private LocalDateTime endTime;
 
 
     // Конструктор с двумя параметрами (статус по умолчанию NEW)
