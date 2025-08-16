@@ -1,23 +1,33 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 public class Task {
     private int id;
     private String title;
     private String description;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
+
 
     // Конструктор с двумя параметрами (статус по умолчанию NEW)
-    public Task(String title, String description) {
+    public Task(String title, String description, Duration duration, LocalDateTime startTime) {
         this.title = title;
         this.description = description;
         this.status = Status.NEW;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     // Новый конструктор с тремя параметрами (статус передается явно)
-    public Task(String title, String description, Status status) {
+    public Task(String title, String description, Status status, Duration duration, LocalDateTime startTime) {
         this.title = title;
         this.description = description;
         this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
     }
 
     // Геттеры и сеттеры
@@ -61,5 +71,21 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
     }
 }
