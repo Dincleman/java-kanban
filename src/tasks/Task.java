@@ -3,6 +3,7 @@ package tasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+
 public class Task {
     private int id;
     private String title;
@@ -14,7 +15,7 @@ public class Task {
 
 
     // Конструктор с двумя параметрами (статус по умолчанию NEW)
-    public Task(String title, String description, Duration duration, LocalDateTime startTime) {
+    public Task(String title, String description, LocalDateTime startTime,  Duration duration) {
         this.title = title;
         this.description = description;
         this.status = Status.NEW;
@@ -23,7 +24,7 @@ public class Task {
     }
 
     // Новый конструктор с тремя параметрами (статус передается явно)
-    public Task(String title, String description, Status status, Duration duration, LocalDateTime startTime) {
+    public Task(String title, String description, Status status, LocalDateTime startTime,  Duration duration) {
         this.title = title;
         this.description = description;
         this.status = status;
@@ -95,9 +96,22 @@ public class Task {
     }
     
     //сеттер под вопросом
-    public LocalDateTime setEndTime() {
+    public void setEndTime() {
         this.endTime = endTime;
     }
 
+    // Переопределение equals и hashCode для корректного сравнения задач (нужно для списков и проверок пересечений)
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Task task = (Task) obj;
+        return id == task.id; // Сравнение по ID (предполагаем, что ID уникален)
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
+    }
 
 }

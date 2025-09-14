@@ -4,6 +4,8 @@ import manager.TaskManager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 public class Main {
     public static void main(String[] args) {
@@ -11,20 +13,22 @@ public class Main {
         TaskManager taskManager = new InMemoryTaskManager();
 
         // Создаем задачи
-        Task task1 = new Task("Задача 1", "Описание задачи 1");
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.ofMinutes(60);
+        Task task1 = new Task("Задача 1", "Описание задачи 1", now, duration);
+        Task task2 = new Task("Задача 2", "Описание задачи 2", now.plusHours(2), duration);
 
         // Добавляем задачи
         int task1Id = taskManager.addNewTask(task1);
         int task2Id = taskManager.addNewTask(task2);
 
         // Создаем эпик
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
+        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", now.plusHours(4), duration);
         int epic1Id = taskManager.addNewEpic(epic1);
 
         // Создаем подзадачи
-        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", epic1Id);
-        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", epic1Id);
+        Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", epic1Id, now.plusHours(6), duration);
+        Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", epic1Id, now.plusHours(8), duration);
 
         // Добавляем подзадачи
         int subtask1Id = taskManager.addNewSubtask(subtask1);

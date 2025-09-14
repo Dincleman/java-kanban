@@ -199,5 +199,10 @@ public class InMemoryTaskManager implements TaskManager {
         allTasks.addAll(epics.values());
         return allTasks;
     }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return List.of();
+    }
 }
 
