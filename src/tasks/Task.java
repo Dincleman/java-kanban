@@ -101,7 +101,6 @@ public class Task {
     public LocalDateTime getEndTime() {
         return startTime.plus(duration); // уточнить про сеттер- он же не нужен, т.к. мы EndTime вычисляем в методе?
     }
-    
     //сеттер под вопросом
     public void setEndTime() {
         this.endTime = endTime;
