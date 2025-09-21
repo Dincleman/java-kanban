@@ -3,7 +3,6 @@ package tasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-
 public class Task {
     private int id;
     private String title;
@@ -13,30 +12,44 @@ public class Task {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-
     // Конструктор с двумя параметрами (статус по умолчанию NEW)
-    public Task(String title, String description, LocalDateTime startTime,  Duration duration) {
+    public Task(String title, String description, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
         this.status = Status.NEW;
         this.duration = duration;
         this.startTime = startTime;
+        this.endTime = startTime.plus(duration);
     }
 
     // Новый конструктор с тремя параметрами (статус передается явно)
-    public Task(String title, String description, Status status, LocalDateTime startTime,  Duration duration) {
+    public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.duration = duration;
         this.startTime = startTime;
+        this.endTime = startTime.plus(duration);
     }
 
     public Task(String title, String description, Status status) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        // Инициализация duration и startTime по умолчанию
+        this.duration = Duration.ZERO;
+        this.startTime = LocalDateTime.now(); // Или другое значение по умолчанию
+        this.endTime = this.startTime.plus(this.duration);
     }
 
     public Task() {
-
+        // Дефолтные значения
+        this.title = "";
+        this.description = "";
+        this.status = Status.NEW;
+        this.duration = Duration.ZERO;
+        this.startTime = LocalDateTime.now();
+        this.endTime = this.startTime.plus(this.duration);
     }
 
     // Геттеры и сеттеры
@@ -79,6 +92,8 @@ public class Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
                 '}';
     }
 
@@ -99,10 +114,11 @@ public class Task {
     }
 
     public LocalDateTime getEndTime() {
-        return startTime.plus(duration); // уточнить про сеттер- он же не нужен, т.к. мы EndTime вычисляем в методе?
+        return startTime.plus(duration); // EndTime вычисляется динамически
     }
-    //сеттер под вопросом
-    public void setEndTime() {
+
+    // Сеттер под вопросом
+    public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
@@ -119,5 +135,4 @@ public class Task {
     public int hashCode() {
         return Integer.hashCode(id);
     }
-
 }
