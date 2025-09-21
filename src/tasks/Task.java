@@ -32,6 +32,13 @@ public class Task {
         this.startTime = startTime;
     }
 
+    public Task(String title, String description, Status status) {
+    }
+
+    public Task() {
+
+    }
+
     // Геттеры и сеттеры
     public int getId() {
         return id;

@@ -204,5 +204,10 @@ public class InMemoryTaskManager implements TaskManager {
     public List<Task> getPrioritizedTasks() {
         return List.of();
     }
+
+    @Override
+    public List<Subtask> getEpicSubtasks(int epicId) {
+        return List.of();
+    }
 }
 

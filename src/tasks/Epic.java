@@ -13,6 +13,10 @@ public class Epic extends Task {
         super(title, description, startTime, duration);
     }
 
+    public Epic(String epicTitle, String epicDescription) {
+        super();
+    }
+
     public void addSubtask(Subtask subtask) {
         if (getId() == subtask.getId()) {
             throw new IllegalArgumentException("Подзадача не может быть своим эпиком");

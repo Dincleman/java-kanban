@@ -1,154 +1,57 @@
 import manager.FileBackedTaskManager;
-import org.junit.jupiter.api.*;
-import tasks.Epic;
+import manager.ManagerSaveException;
+import manager.TaskManagerTest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import tasks.Status;
-import tasks.Subtask;
 import tasks.Task;
+import tasks.TaskNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest {
-
-    private FileBackedTaskManager manager;
+class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     private File tempFile;
 
-    @BeforeEach
-    void setUp() throws IOException {
-        // Создаем временный файл для тестов
-        tempFile = File.createTempFile("tasks", ".csv");
-        // Удалять файл после завершения тестов
-        tempFile.deleteOnExit();
-
-        manager = new FileBackedTaskManager(tempFile);
+    @Override
+    protected FileBackedTaskManager createTaskManager() {
+        try {
+            tempFile = File.createTempFile("tasks", ".csv");
+            tempFile.deleteOnExit();
+            return new FileBackedTaskManager(tempFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @AfterEach
-    void tearDown() {
-        // Очистим менеджер после каждого теста
-        manager.removeAllTasks();
-        manager.removeAllSubtasks();
-        manager.removeAllEpics();
+    public void tearDown() {
+        super.tearDown();
+        // Дополнительная очистка, если нужно
+    }
+
+    // Специфические тесты для FileBackedTaskManager
+    @Test
+    void testFileExceptionHandling() {
+        File invalidFile = new File("invalid/path.csv");
+        assertThrows(ManagerSaveException.class, () -> FileBackedTaskManager.loadFromFile(invalidFile),
+                "Загрузка из некорректного файла должна генерировать ManagerSaveException.");
     }
 
     @Test
-    void testAddNewTaskSavesToFile() throws IOException {
-        Task task = new Task("Test task", "Description", Status.NEW);
-        int id = manager.addNewTask(task);
-
-        assertTrue(id > 0);
-
-        List<String> lines = Files.readAllLines(tempFile.toPath());
-        assertFalse(lines.isEmpty());
-        // Проверяем, что в файле есть строка с задачей
-        boolean found = lines.stream().anyMatch(line -> line.contains("TASK") && line.contains("Test task"));
-        assertTrue(found);
-    }
-
-    @Test
-    void testAddNewEpicSavesToFile() throws IOException {
-        Epic epic = new Epic("Epic title", "Epic description");
-        int id = manager.addNewEpic(epic);
-
-        assertTrue(id > 0);
-
-        List<String> lines = Files.readAllLines(tempFile.toPath());
-        assertTrue(lines.stream().anyMatch(line -> line.contains("EPIC") && line.contains("Epic title")));
-    }
-
-    @Test
-    void testAddNewSubtaskSavesToFile() throws IOException {
-        Epic epic = new Epic("Epic", "Desc");
-        int epicId = manager.addNewEpic(epic);
-
-        Subtask subtask = new Subtask("Subtask", "Desc", epicId);
-        int subtaskId = manager.addNewSubtask(subtask);
-
-        assertTrue(subtaskId > 0);
-
-        List<String> lines = Files.readAllLines(tempFile.toPath());
-        assertTrue(lines.stream().anyMatch(line -> line.contains("SUBTASK") && line.contains("Subtask")));
-    }
-
-    @Test
-    void testUpdateTaskSavesToFile() throws IOException {
-        Task task = new Task("Old title", "Old desc", Status.NEW);
-        manager.addNewTask(task);
-
-        task.setTitle("New title");
-        task.setDescription("New desc");
-        task.setStatus(Status.DONE);
-        manager.updateTask(task);
-
-        List<String> lines = Files.readAllLines(tempFile.toPath());
-        boolean found = lines.stream().anyMatch(line -> line.contains("TASK") && line.contains("New title") && line.contains("DONE"));
-        assertTrue(found);
-    }
-
-    @Test
-    void testRemoveTaskSavesToFile() throws IOException {
-        Task task = new Task("Task to remove", "Desc", Status.NEW);
-        int id = manager.addNewTask(task);
-
-        manager.removeTask(id);
-
-        List<String> lines = Files.readAllLines(tempFile.toPath());
-        // Строка с задачей должна отсутствовать
-        boolean found = lines.stream().anyMatch(line -> line.contains("Task to remove"));
-        assertFalse(found);
-    }
-
-    @Test
-    void testFromStringValidTask() {
-        String line = "1,TASK,Task title,NEW,Description,";
-        Task task = manager.fromString(line);
-
-        assertNotNull(task);
-        assertEquals(1, task.getId());
-        assertEquals("Task title", task.getTitle());
-        assertEquals("Description", task.getDescription());
-        assertEquals(Status.NEW, task.getStatus());
-    }
-
-    @Test
-    void testFromStringValidEpic() {
-        String line = "2,EPIC,Epic title,DONE,Description,";
-        Epic epic = (Epic) manager.fromString(line);
-
-        assertNotNull(epic);
-        assertEquals(2, epic.getId());
-        assertEquals("Epic title", epic.getTitle());
-        assertEquals("Description", epic.getDescription());
-        assertEquals(Status.DONE, epic.getStatus());
-    }
-
-    @Test
-    void testFromStringValidSubtask() {
-        String line = "3,SUBTASK,Subtask title,IN_PROGRESS,Description,2";
-        Subtask subtask = (Subtask) manager.fromString(line);
-
-        assertNotNull(subtask);
-        assertEquals(3, subtask.getId());
-        assertEquals("Subtask title", subtask.getTitle());
-        assertEquals("Description", subtask.getDescription());
-        assertEquals(Status.IN_PROGRESS, subtask.getStatus());
-        assertEquals(2, subtask.getEpicId());
-    }
-
-    @Test
-    void testFromStringInvalidFormatThrows() {
-        String invalidLine = "invalid,data";
-
-        assertThrows(IllegalArgumentException.class, () -> manager.fromString(invalidLine));
-    }
-
-    @Test
-    void testFromStringNullOrEmptyThrows() {
-        assertThrows(IllegalArgumentException.class, () -> manager.fromString(null));
-        assertThrows(IllegalArgumentException.class, () -> manager.fromString(""));
+    void testLoadFromFileRestoresData() {
+        Task task = new Task("Loaded Task", "Desc", Status.NEW, LocalDateTime.now(), Duration.ofHours(1));
+        taskManager.addNewTask(task);
+        taskManager = FileBackedTaskManager.loadFromFile(tempFile);
+        Task loadedTask = taskManager.getTask(task.getId());
+        assertNotNull(loadedTask);
+        assertEquals(task.getId(), loadedTask.getId());
+        assertEquals(task.getStartTime(), loadedTask.getStartTime());
+        assertEquals(task.getDuration(), loadedTask.getDuration());
     }
 }
