@@ -36,6 +36,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Task retrieved = taskManager.getTask(id);
         assertNotNull(retrieved);
         assertEquals("Test Task", retrieved.getTitle());
+        assertEquals("Desc", retrieved.getDescription()); // Добавлена проверка описания
         assertEquals(startTime, retrieved.getStartTime());
         assertEquals(Duration.ofHours(1), retrieved.getDuration());
     }
@@ -48,6 +49,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic retrieved = taskManager.getEpic(id);
         assertNotNull(retrieved);
         assertEquals("Test Epic", retrieved.getTitle());
+        assertEquals("Desc", retrieved.getDescription()); // Добавлена проверка описания
+        assertEquals(Status.NEW, retrieved.getStatus()); // Добавлена проверка статуса
     }
 
     @Test
@@ -60,7 +63,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(id > 0);
         Subtask retrieved = taskManager.getSubtask(id);
         assertNotNull(retrieved);
-        assertEquals(epicId, retrieved.getEpicId()); // Проверка связи с эпиком
+        assertEquals(epicId, retrieved.getEpicId());
         assertEquals(startTime, retrieved.getStartTime());
         assertEquals(Duration.ofHours(1), retrieved.getDuration());
     }
@@ -154,19 +157,19 @@ public abstract class TaskManagerTest<T extends TaskManager> {
     // Тест на пересечение интервалов
     @Test
     void testTimeIntersectionPrevention() {
-        Task task1 = new Task("Task1", "Desc", Status.NEW, LocalDateTime.now(), Duration.ofHours(1));
+        LocalDateTime now = LocalDateTime.now();
+        Task task1 = new Task("Task1", "Desc", Status.NEW, now, Duration.ofHours(1));
         taskManager.addNewTask(task1);
-        Task task2 = new Task("Task2", "Desc", Status.NEW, LocalDateTime.now().plusMinutes(30), Duration.ofHours(1)); // Пересекается
+        Task task2 = new Task("Task2", "Desc", Status.NEW, now.plusMinutes(30), Duration.ofHours(1)); // Пересекается с task1
         assertThrows(IllegalArgumentException.class, () -> taskManager.addNewTask(task2), "Задачи с пересекающимися интервалами не должны добавляться.");
     }
 
-    // Тесты для исключений (используя assertThrows)
+    // Тесты для исключений
     @Test
     void testTaskNotFoundException() {
         assertThrows(TaskNotFoundException.class, () -> taskManager.getTask(999));
     }
 
-    // Дополнительные тесты: assertDoesNotThrow для успешных операций
     @Test
     void testSuccessfulTaskAddition() {
         assertDoesNotThrow(() -> {

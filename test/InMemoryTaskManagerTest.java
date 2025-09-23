@@ -10,7 +10,12 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
 
     @Override
     protected InMemoryTaskManager createTaskManager() {
-        return new InMemoryTaskManager();
+        return new InMemoryTaskManager() {
+            @Override
+            protected void save() {
+
+            }
+        };
     }
 
     // Дополнительные специфические тесты для InMemoryTaskManager, если нужны
@@ -21,7 +26,12 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         // (Этот тест может быть пустым или содержать специфическую логику, если есть особенности)
         // В InMemoryTaskManager нет файловых операций, так что можно добавить тесты на отсутствие исключений
         assertDoesNotThrow(() -> {
-            InMemoryTaskManager manager = new InMemoryTaskManager();
+            InMemoryTaskManager manager = new InMemoryTaskManager() {
+                @Override
+                protected void save() {
+
+                }
+            };
             // Любые операции без исключений
         });
     }

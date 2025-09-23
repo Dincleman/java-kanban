@@ -18,6 +18,9 @@ public class Subtask extends Task {
     public Subtask(String testSubtask, String desc, Status status, int epicId, LocalDateTime startTime, Duration duration) {
     }
 
+    public Subtask(String name, String description, Status status, int epicId) {
+    }
+
     public int getEpicId() {
         return epicId;
     }

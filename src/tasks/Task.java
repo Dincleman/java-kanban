@@ -135,4 +135,8 @@ public class Task {
     public int hashCode() {
         return Integer.hashCode(id);
     }
+
+    public Object getName() {
+        return null;
+    }
 }

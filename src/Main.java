@@ -10,7 +10,12 @@ import java.time.LocalDateTime;
 public class Main {
     public static void main(String[] args) {
         // Создаем менеджер задач
-        TaskManager taskManager = new InMemoryTaskManager();
+        TaskManager taskManager = new InMemoryTaskManager() {
+            @Override
+            protected void save() {
+
+            }
+        };
 
         // Создаем задачи
         LocalDateTime now = LocalDateTime.now();
