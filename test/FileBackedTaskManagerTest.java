@@ -5,11 +5,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import tasks.Status;
 import tasks.Task;
-import tasks.TaskNotFoundException;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
@@ -35,7 +33,6 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
         // Дополнительная очистка, если нужно
     }
 
-    // Специфические тесты для FileBackedTaskManager
     @Test
     void testFileExceptionHandling() {
         File invalidFile = new File("invalid/path.csv");
@@ -46,11 +43,16 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     void testLoadFromFileRestoresData() {
         Task task = new Task("Loaded Task", "Desc", Status.NEW, LocalDateTime.now(), Duration.ofHours(1));
-        taskManager.addNewTask(task);
-        taskManager = FileBackedTaskManager.loadFromFile(tempFile);
-        Task loadedTask = taskManager.getTask(task.getId());
+        int id = taskManager.addNewTask(task);
+        taskManager.save();
+
+        FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
+        Task loadedTask = loadedManager.getTask(id);
+
         assertNotNull(loadedTask);
         assertEquals(task.getId(), loadedTask.getId());
+        assertEquals(task.getTitle(), loadedTask.getTitle());
+        assertEquals(task.getDescription(), loadedTask.getDescription());
         assertEquals(task.getStartTime(), loadedTask.getStartTime());
         assertEquals(task.getDuration(), loadedTask.getDuration());
     }

@@ -1,6 +1,7 @@
 import manager.HistoryManager;
 import manager.InMemoryHistoryManager;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import tasks.Status;
 import tasks.Task;
 
@@ -83,5 +84,11 @@ class InMemoryHistoryManagerTest {
         List<Task> history = historyManager.getHistory();
         assertEquals(1, history.size());
         assertEquals(task1, history.get(0));
+    }
+
+    @Test
+    void testRemoveNonExistingIdDoesNotThrow() {
+        historyManager.remove(9999); // Не должно бросать исключений
+        assertTrue(historyManager.getHistory().isEmpty());
     }
 }

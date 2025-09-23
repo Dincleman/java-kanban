@@ -158,7 +158,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    protected void save() {
+    public void save() {
         try (Writer fileWriter = new FileWriter(file)) {
             fileWriter.write("id,type,name,status,description,epic\n");
 
