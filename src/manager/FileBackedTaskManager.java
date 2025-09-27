@@ -170,7 +170,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private static Task fromString(String value){
+   private static Task fromString(String value) {
         // Разобрать строку CSV: id,type,name,status,description,epic
         String[] parts = value.split(",", 6);
         if (parts.length < 6) {
