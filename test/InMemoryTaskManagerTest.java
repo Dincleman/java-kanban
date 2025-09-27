@@ -1,8 +1,10 @@
-import manager.InMemoryTaskManager;
-import manager.TaskManager;
-import manager.TaskManagerTest;
-import org.junit.jupiter.api.BeforeEach;
+package manager;
+
 import org.junit.jupiter.api.Test;
+import tasks.Subtask;
+import tasks.Task;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -12,27 +14,81 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     protected InMemoryTaskManager createTaskManager() {
         return new InMemoryTaskManager() {
             @Override
-            protected void save() {
+            public void removeAllTasks() {
 
+            }
+
+            @Override
+            public void removeAllSubtasks() {
+
+            }
+
+            @Override
+            public void removeAllEpics() {
+
+            }
+
+            @Override
+            public List<Task> getAllTasks() {
+                return List.of();
+            }
+
+            @Override
+            public List<Subtask> getEpicSubtasks(int epicId) {
+                return List.of();
+            }
+
+            @Override
+            public CharSequence getAllEpics() {
+                return null;
+            }
+
+            @Override
+            protected void save() {
+                // Отключаем сохранение для InMemory реализации
             }
         };
     }
 
-    // Дополнительные специфические тесты для InMemoryTaskManager, если нужны
-    // (Например, тесты, не покрытые в базовом классе TaskManagerTest)
     @Test
     public void testSpecificInMemoryBehavior() {
-        // Пример: Тест на то, что данные хранятся только в памяти и не сохраняются
-        // (Этот тест может быть пустым или содержать специфическую логику, если есть особенности)
-        // В InMemoryTaskManager нет файловых операций, так что можно добавить тесты на отсутствие исключений
         assertDoesNotThrow(() -> {
             InMemoryTaskManager manager = new InMemoryTaskManager() {
                 @Override
-                protected void save() {
+                public void removeAllTasks() {
 
                 }
+
+                @Override
+                public void removeAllSubtasks() {
+
+                }
+
+                @Override
+                public void removeAllEpics() {
+
+                }
+
+                @Override
+                public List<Task> getAllTasks() {
+                    return List.of();
+                }
+
+                @Override
+                public List<Subtask> getEpicSubtasks(int epicId) {
+                    return List.of();
+                }
+
+                @Override
+                public CharSequence getAllEpics() {
+                    return null;
+                }
+
+                @Override
+                protected void save() {
+                    // Отключаем сохранение
+                }
             };
-            // Любые операции без исключений
         });
     }
 }

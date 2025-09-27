@@ -1,4 +1,5 @@
 import manager.InMemoryTaskManager;
+import manager.Managers;
 import manager.TaskManager;
 
 import tasks.Epic;
@@ -10,12 +11,7 @@ import java.time.LocalDateTime;
 public class Main {
     public static void main(String[] args) {
         // Создаем менеджер задач
-        TaskManager taskManager = new InMemoryTaskManager() {
-            @Override
-            protected void save() {
-
-            }
-        };
+        TaskManager taskManager = Managers.getDefault();
 
         // Создаем задачи
         LocalDateTime now = LocalDateTime.now();

@@ -136,7 +136,7 @@ public class Task {
         return Integer.hashCode(id);
     }
 
-    public Object getName() {
-        return null;
+    public boolean intersects(Task task) {
+        return false;
     }
 }

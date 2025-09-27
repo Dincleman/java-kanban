@@ -74,4 +74,8 @@ public interface TaskManager {
 
 
     List<Subtask> getEpicSubtasks(int epicId);
+
+    void clearAll();
+
+    CharSequence getAllEpics();
 }

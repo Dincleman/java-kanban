@@ -1,6 +1,5 @@
-import manager.FileBackedTaskManager;
-import manager.ManagerSaveException;
-import manager.TaskManagerTest;
+package manager;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import tasks.Status;
@@ -9,11 +8,10 @@ import tasks.Task;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+class FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBackedTaskManager> {
     private File tempFile;
 
     @Override
@@ -30,19 +28,20 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @AfterEach
     public void tearDown() {
         super.tearDown();
-        // Дополнительная очистка, если нужно
+        // Если нужно, можно добавить дополнительную очистку файла
     }
 
     @Test
     void testFileExceptionHandling() {
         File invalidFile = new File("invalid/path.csv");
-        assertThrows(ManagerSaveException.class, () -> FileBackedTaskManager.loadFromFile(invalidFile),
+        assertThrows(ManagerSaveException.class,
+                () -> FileBackedTaskManager.loadFromFile(invalidFile),
                 "Загрузка из некорректного файла должна генерировать ManagerSaveException.");
     }
 
     @Test
     void testLoadFromFileRestoresData() {
-        Task task = new Task("Loaded Task", "Desc", Status.NEW, LocalDateTime.now(), Duration.ofHours(1));
+        Task task = new Task("Loaded Task", "Desc", Status.NEW, fixedTime, Duration.ofHours(1));
         int id = taskManager.addNewTask(task);
         taskManager.save();
 
