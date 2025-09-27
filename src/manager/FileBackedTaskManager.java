@@ -116,6 +116,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Ошибка при загрузке из файла");
         }
     }
+
     @Override
     protected void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
