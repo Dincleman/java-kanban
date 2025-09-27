@@ -19,7 +19,12 @@ class  FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBackedTaskM
         try {
             tempFile = File.createTempFile("tasks", ".csv");
             tempFile.deleteOnExit();
-            return new FileBackedTaskManager(tempFile);
+            return new FileBackedTaskManager(tempFile) {
+                //@Override
+                public CharSequence getAllSubtasks() {
+                    return null;
+                }
+            };
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

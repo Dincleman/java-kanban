@@ -172,7 +172,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         assertTrue(taskManager.getAllTasks().isEmpty());
     }
 
-    /*@Test
+    @Test
     void testRemoveAllEpicsAndSubtasks() {
         Epic epic = new Epic("Epic", "Desc");
         int epicId = taskManager.addNewEpic(epic);
@@ -181,8 +181,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         taskManager.removeAllEpics();
         assertTrue(taskManager.getAllEpics().isEmpty());
-        assertTrue(taskManager.getAllSubtasks().isEmpty());
-    } */
+        //assertTrue(taskManager.getAllSubtasks().isEmpty());
+    }
 
     @Test
     void testRemoveSubtask() {

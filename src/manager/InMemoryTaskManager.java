@@ -266,7 +266,7 @@ public abstract class InMemoryTaskManager implements TaskManager {
         nextId = 1;
         save();
     }
-    }
+}
 
 
 

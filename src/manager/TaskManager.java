@@ -78,4 +78,6 @@ public interface TaskManager {
     void clearAll();
 
     CharSequence getAllEpics();
+
+    //CharSequence getAllSubtasks();
 }
