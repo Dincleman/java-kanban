@@ -8,7 +8,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+public class InMemoryTaskManagerTest extends manager.TaskManagerTest<InMemoryTaskManager> {
 
     @Override
     protected InMemoryTaskManager createTaskManager() {
