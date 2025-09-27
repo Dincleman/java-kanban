@@ -116,6 +116,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             throw new ManagerSaveException("Ошибка при загрузке из файла");
         }
     }
+
     @Override
     protected void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
@@ -169,7 +170,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         }
     }
 
-    private static Task fromString(String value){
+    private static Task fromString(String value) {
         // Разобрать строку CSV: id,type,name,status,description,epic
         String[] parts = value.split(",", 6);
         if (parts.length < 6) {
