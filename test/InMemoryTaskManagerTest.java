@@ -1,14 +1,12 @@
-package manager;
-
+import manager.InMemoryTaskManager;
 import org.junit.jupiter.api.Test;
 import tasks.Subtask;
-import tasks.Task;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class InMemoryTaskManagerTest extends manager.TaskManagerTest<InMemoryTaskManager> {
+public class InMemoryTaskManagerTest<InMemoryTaskManager> extends TaskManagerTest<InMemoryTaskManager> {
 
     @Override
     protected InMemoryTaskManager createTaskManager() {
@@ -29,7 +27,7 @@ public class InMemoryTaskManagerTest extends manager.TaskManagerTest<InMemoryTas
             }
 
             @Override
-            public List<Task> getAllTasks() {
+            public List<Subtask> getAllTasks() {
                 return List.of();
             }
 
@@ -70,7 +68,7 @@ public class InMemoryTaskManagerTest extends manager.TaskManagerTest<InMemoryTas
                 }
 
                 @Override
-                public List<Task> getAllTasks() {
+                public List<Subtask> getAllTasks() {
                     return List.of();
                 }
 

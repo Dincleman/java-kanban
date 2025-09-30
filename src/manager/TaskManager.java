@@ -8,58 +8,64 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TaskManager {
-    // Задачи
+
+    // --- Добавление ---
     int addNewTask(Task task);
 
-    Task getTask(int id);
-
-    List<Task> getTasks();
-
-    void removeTask(int id);
-
-    // Подзадачи
     int addNewSubtask(Subtask subtask);
+
+    int addNewEpic(Epic epic);
+
+    // --- Получение по ID ---
+    Task getTask(int id);
 
     Subtask getSubtask(int id);
 
-    List<Subtask> getSubtasks();
-
-    void removeSubtask(int id);
-
-    // Эпики
-    int addNewEpic(Epic epic);
-
     Epic getEpic(int id);
 
-    List<Epic> getEpics();
+    // --- Получение всех ---
+    List<Task> getAllTasks();       // Все задачи (исключая эпики и подзадачи)
 
-    void removeEpic(int id);
+    List<Subtask> getAllSubtasks(); // Все подзадачи
 
-    // Обновление задач, подзадач и эпиков
+    List<Epic> getAllEpics();       // Все эпики
+
+    // Получить подзадачи конкретного эпика
+    List<Subtask> getEpicSubtasks(int epicId);
+
+    // --- Обновление ---
     void updateTask(Task task);
 
     void updateSubtask(Subtask subtask);
 
     void updateEpic(Epic epic);
 
-    // История
-    List<Task> getHistory();
+    // --- Удаление по ID ---
+    void removeTask(int id);
 
-    // Удаление всех задач, подзадач и эпиков
+    void removeSubtask(int id);
+
+    void removeEpic(int id);
+
+    // --- Удаление всех ---
     void removeAllTasks();
 
     void removeAllSubtasks();
 
     void removeAllEpics();
 
-    // Метод для получения всех задач (включая задачи, подзадачи и эпики)
-    List<Task> getAllTasks();
+    // --- История ---
+    List<Task> getHistory();
 
-    //
+    // --- Приоритеты ---
     List<Task> getPrioritizedTasks();
 
-    // Статический метод для проверки пересечения двух задач по времени
-    // Используется для предотвращения конфликтов в расписании
+    // --- Утилиты ---
+
+    // Очистка всех данных
+    void clearAll();
+
+    // Проверка пересечения по времени двух задач
     static boolean intersects(Task task1, Task task2) {
         if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null) {
             return false; // Если задачи или времена отсутствуют, пересечения нет
@@ -71,13 +77,5 @@ public interface TaskManager {
         // Пересечение: конец одного >= начало другого и наоборот
         return end1.isAfter(start2) && end2.isAfter(start1);
     }
-
-
-    List<Subtask> getEpicSubtasks(int epicId);
-
-    void clearAll();
-
-    CharSequence getAllEpics();
-
-    //CharSequence getAllSubtasks();
 }
+

@@ -1,7 +1,6 @@
 package manager;
 
 import tasks.Subtask;
-import tasks.Task;
 
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class Managers {
             }
 
             @Override
-            public List<Task> getAllTasks() {
+            public List<Subtask> getAllTasks() {
                 return List.of();
             }
 

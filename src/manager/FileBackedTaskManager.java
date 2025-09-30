@@ -3,13 +3,15 @@ package manager;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-import tasks.Status;
+
 
 import java.io.*;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 
-public class FileBackedTaskManager extends InMemoryTaskManager {
+public class FileBackedTaskManager extends InMemoryTaskManager implements TaskManager {
     private final File file;
 
     public FileBackedTaskManager(File file) {
@@ -65,7 +67,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
 
-            // Теперь загрузим подзадачи и свяжем с эпиками
+            // Теперь загрузим подзадачи
             for (; i < lines.size(); i++) {
                 String line = lines.get(i).trim();
                 if (line.isEmpty()) {
@@ -77,19 +79,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     Subtask subtask = (Subtask) task;
                     subtasks.put(subtask.getId(), subtask);
                     allTasksById.put(subtask.getId(), subtask);
+
+                    // Добавляем подзадачу в эпик
                     Epic epic = epics.get(subtask.getEpicId());
                     if (epic != null) {
                         epic.getSubtasks().add(subtask);
+                    } else {
+                        throw new ManagerSaveException("Подзадача с id " + subtask.getId() +
+                                " ссылается на несуществующий эпик " + subtask.getEpicId());
                     }
                 }
             }
 
-            // Обновим статусы эпиков
-            for (Epic epic : epics.values()) {
-                epic.getStatus();
-            }
-
-            // Восстановим историю просмотров
+            // Загрузим историю
             if (i < lines.size()) {
                 String historyLine = lines.get(i).trim();
                 if (!historyLine.isEmpty()) {
@@ -103,25 +105,16 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 }
             }
 
-            // Обновим nextId, чтобы не было конфликтов
-            int maxId = 0;
-            for (Integer id : allTasksById.keySet()) {
-                if (id > maxId) {
-                    maxId = id;
-                }
-            }
-            nextId = maxId + 1;
-
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при загрузке из файла");
+            throw new ManagerSaveException("Ошибка чтения из файла: " + e.getMessage());
         }
     }
 
-    @Override
-    protected void save() {
+    private void save() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
             // Запишем заголовок
-            writer.write("id,type,name,status,description,epic\n");
+            writer.write("id,type,name,status,description,startTime,duration,endTime,epic");
+            writer.newLine();
 
             // Запишем задачи
             for (Task task : tasks.values()) {
@@ -141,68 +134,228 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.newLine();
             }
 
-            // Пустая строка
+            // Пустая строка для разделения
             writer.newLine();
 
-            // Запишем историю в виде строки с id через запятую
+            // Запишем историю
             writer.write(historyToString(historyManager));
-            writer.newLine();
 
         } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при сохранении в файл");
+            throw new ManagerSaveException("Ошибка записи в файл: " + e.getMessage());
         }
     }
 
-    private static String toString(Task task) {
-        // Формат CSV: id,type,name,status,description,epic
-        // epic для подзадач - id эпика, для других - пусто
-        String base = String.format("%d,%s,%s,%s,%s",
-                task.getId(),
-                task.getClass().getSimpleName(),
-                escapeCommas(task.getTitle()),
-                task.getStatus(),
-                escapeCommas(task.getDescription())
-        );
+    // Реализация методов интерфейса TaskManager
+
+    @Override
+    public int addNewTask(Task task) {
+        int id = super.addNewTask(task);
+        save();
+        return id;
+    }
+
+    @Override
+    public int addNewSubtask(Subtask subtask) {
+        int id = super.addNewSubtask(subtask);
+        save();
+        return id;
+    }
+
+    @Override
+    public int addNewEpic(Epic epic) {
+        int id = super.addNewEpic(epic);
+        save();
+        return id;
+    }
+
+    @Override
+    public Task getTask(int id) {
+        Task task = super.getTask(id);
+        return task;
+    }
+
+    @Override
+    public Subtask getSubtask(int id) {
+        Subtask subtask = super.getSubtask(id);
+        return subtask;
+    }
+
+    @Override
+    public Epic getEpic(int id) {
+        Epic epic = super.getEpic(id);
+        return epic;
+    }
+
+    @Override
+    public List<Task> getAllTasks() {
+        return super.getAllTasks();
+    }
+
+    @Override
+    public List<Subtask> getAllSubtasks() {
+        return super.getAllSubtasks();
+    }
+
+    @Override
+    public List<Epic> getAllEpics() {
+        return super.getAllEpics();
+    }
+
+    @Override
+    public List<Subtask> getEpicSubtasks(int epicId) {
+        return super.getEpicSubtasks(epicId);
+    }
+
+    @Override
+    public void updateTask(Task task) {
+        super.updateTask(task);
+        save();
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask) {
+        super.updateSubtask(subtask);
+        save();
+    }
+
+    @Override
+    public void updateEpic(Epic epic) {
+        super.updateEpic(epic);
+        save();
+    }
+
+    @Override
+    public void removeTask(int id) {
+        super.removeTask(id);
+        save();
+    }
+
+    @Override
+    public void removeSubtask(int id) {
+        super.removeSubtask(id);
+        save();
+    }
+
+    @Override
+    public void removeEpic(int id) {
+        super.removeEpic(id);
+        save();
+    }
+
+    @Override
+    public void removeAllTasks() {
+        super.removeAllTasks();
+        save();
+    }
+
+    @Override
+    public void removeAllSubtasks() {
+        super.removeAllSubtasks();
+        save();
+    }
+
+    @Override
+    public void removeAllEpics() {
+        super.removeAllEpics();
+        save();
+    }
+
+    @Override
+    public List<Task> getHistory() {
+        return super.getHistory();
+    }
+
+    @Override
+    public List<Task> getPrioritizedTasks() {
+        return super.getPrioritizedTasks();
+    }
+
+    @Override
+    public void clearAll() {
+        super.clearAll();
+        save();
+    }
+
+    private String toString(Task task) {
+        String base = task.getId() + "," + task.getType() + "," + task.getName() + "," + task.getStatus() + "," + task.getDescription() + ",";
+
+        // Добавляем временные поля
+        if (task.getStartTime() != null) {
+            base += task.getStartTime().toString();
+        }
+        base += ",";
+
+        if (task.getDuration() != null) {
+            base += task.getDuration().toMinutes();
+        }
+        base += ",";
+
+        if (task.getEndTime() != null) {
+            base += task.getEndTime().toString();
+        }
+        base += ",";
+
+        // Для подзадач добавляем epicId, для остальных пустое
         if (task instanceof Subtask) {
-            return base + "," + ((Subtask) task).getEpicId();
+            Subtask subtask = (Subtask) task;
+            base += subtask.getEpicId();
         } else {
-            return base + ",";
+            base += ""; // Для Task и Epic поле epic пустое
         }
+
+        return base;
     }
 
-   private static Task fromString(String value) {
-        // Разобрать строку CSV: id,type,name,status,description,epic
-        String[] parts = value.split(",", 6);
-        if (parts.length < 6) {
-            throw new ManagerSaveException("Некорректная строка в файле: " + value);
+    private Task fromString(String value) {
+        String[] parts = value.split(",");
+        if (parts.length < 9) {
+            throw new ManagerSaveException("Неверный формат строки: " + value);
         }
-        int id = Integer.parseInt(parts[0]);
-        String type = parts[1];
-        String name = unescapeCommas(parts[2]);
-        Status status = Status.valueOf(parts[3]);
-        String description = unescapeCommas(parts[4]);
-        String epicField = parts[5];
 
-        switch (type) {
-            case "Task":
-                Task task = new Task(name, description, status);
-                task.setId(id);
-                return task;
-            case "Epic":
-                Epic epic = new Epic(name, description);
-                epic.setId(id);
-                return epic;
-            case "Subtask":
-                if (epicField.isEmpty()) {
-                    throw new ManagerSaveException("У подзадачи отсутствует id эпика: " + value);
-                }
-                int epicId = Integer.parseInt(epicField);
-                Subtask subtask = new Subtask(name, description, status, epicId);
-                subtask.setId(id);
-                return subtask;
-            default:
-                throw new ManagerSaveException("Неизвестный тип задачи: " + type);
+        int id = Integer.parseInt(parts[0]);
+        TaskType type = TaskType.valueOf(parts[1]);
+        String name = parts[2];
+        Task.Status status = Task.Status.valueOf(parts[3]);
+        String description = parts[4];
+
+        // Парсим временные поля
+        LocalDateTime startTime = null;
+        if (!parts[5].isEmpty()) {
+            startTime = LocalDateTime.parse(parts[5]);
         }
+
+        Duration duration = null;
+        if (!parts[6].isEmpty()) {
+            duration = Duration.ofMinutes(Long.parseLong(parts[6]));
+        }
+
+        LocalDateTime endTime = null;
+        if (!parts[7].isEmpty()) {
+            endTime = LocalDateTime.parse(parts[7]);
+        }
+
+        Task task = null;
+        switch (type) {
+            case TASK:
+                task = new Task(name, description, status);
+                break;
+            case EPIC:
+                task = new Epic(name, description);
+                break;
+            case SUBTASK:
+                int epicId = Integer.parseInt(parts[8]);
+                task = new Subtask(name, description, status, epicId);
+                break;
+        }
+
+        if (task != null) {
+            task.setId(id);
+            task.setStartTime(startTime);
+            task.setDuration(duration);
+            task.setEndTime(endTime);
+        }
+
+        return task;
     }
 
     private static String historyToString(HistoryManager manager) {
@@ -218,60 +371,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private static List<Integer> historyFromString(String value) {
-        List<Integer> historyIds = new ArrayList<>();
+        List<Integer> history = new ArrayList<>();
         if (value.isEmpty()) {
-            return historyIds;
+            return history;
         }
-        String[] parts = value.split(",");
-        for (String part : parts) {
-            historyIds.add(Integer.parseInt(part));
+        String[] ids = value.split(",");
+        for (String id : ids) {
+            history.add(Integer.parseInt(id.trim()));
         }
-        return historyIds;
+        return history;
     }
 
-    private static String escapeCommas(String text) {
-        if (text == null) {
-            return "";
+    // Исключение для ошибок сохранения/загрузки
+    public static class ManagerSaveException extends RuntimeException {
+        public ManagerSaveException(String message) {
+            super(message);
         }
-        return text.replace(",", "\\,");
-    }
 
-    private static String unescapeCommas(String text) {
-        if (text == null) {
-            return "";
+        public ManagerSaveException(String message, Throwable cause) {
+            super(message, cause);
         }
-        return text.replace("\\,", ",");
-    }
-
-    @Override
-    public void removeAllTasks() {
-
-    }
-
-    @Override
-    public void removeAllSubtasks() {
-
-    }
-
-    @Override
-    public void removeAllEpics() {
-
-    }
-
-    @Override
-    public List<Task> getAllTasks() {
-        return List.of();
-    }
-
-    @Override
-    public List<Subtask> getEpicSubtasks(int epicId) {
-        return List.of();
-    }
-
-    @Override
-    public CharSequence getAllEpics() {
-        return null;
     }
 }
-
-

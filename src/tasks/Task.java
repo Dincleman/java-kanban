@@ -2,6 +2,7 @@ package tasks;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Task {
     private int id;
@@ -10,46 +11,46 @@ public class Task {
     private Status status;
     private Duration duration;
     private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalDateTime endTime; // Добавлено поле для хранения времени окончания
 
-    // Конструктор с двумя параметрами (статус по умолчанию NEW)
+    public enum Status {
+        NEW,
+        IN_PROGRESS,
+        DONE
+    }
+
+    // Конструктор с параметрами
     public Task(String title, String description, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
         this.status = Status.NEW;
-        this.duration = duration;
         this.startTime = startTime;
-        this.endTime = startTime.plus(duration);
+        this.duration = duration != null ? duration : Duration.ZERO;
+        // Вычисляем endTime, если возможно
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
     }
 
-    // Новый конструктор с тремя параметрами (статус передается явно)
+    // Конструктор с явным статусом
     public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
-        this.status = status;
-        this.duration = duration;
+        this.status = status != null ? status : Status.NEW;
         this.startTime = startTime;
-        this.endTime = startTime.plus(duration);
+        this.duration = duration != null ? duration : Duration.ZERO;
+        // Вычисляем endTime, если возможно
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
     }
 
     public Task(String title, String description, Status status) {
-        this.title = title;
-        this.description = description;
-        this.status = status;
-        // Инициализация duration и startTime по умолчанию
-        this.duration = Duration.ZERO;
-        this.startTime = LocalDateTime.now(); // Или другое значение по умолчанию
-        this.endTime = this.startTime.plus(this.duration);
+        this(title, description, status, null, Duration.ZERO);
     }
 
     public Task() {
-        // Дефолтные значения
-        this.title = "";
-        this.description = "";
-        this.status = Status.NEW;
-        this.duration = Duration.ZERO;
-        this.startTime = LocalDateTime.now();
-        this.endTime = this.startTime.plus(this.duration);
+        this("", "", Status.NEW, null, Duration.ZERO);
     }
 
     // Геттеры и сеттеры
@@ -85,24 +86,16 @@ public class Task {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "Tasks.Task{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", status=" + status +
-                ", duration=" + duration +
-                ", startTime=" + startTime +
-                '}';
-    }
-
     public Duration getDuration() {
         return duration;
     }
 
     public void setDuration(Duration duration) {
-        this.duration = duration;
+        this.duration = duration != null ? duration : Duration.ZERO;
+        // Пересчитываем endTime, если startTime есть
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
     }
 
     public LocalDateTime getStartTime() {
@@ -111,32 +104,66 @@ public class Task {
 
     public void setStartTime(LocalDateTime startTime) {
         this.startTime = startTime;
+        // Пересчитываем endTime, если duration есть
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
     }
 
+    /**
+     * Возвращает время окончания задачи. Теперь возвращает хранимое значение.
+     */
     public LocalDateTime getEndTime() {
-        return startTime.plus(duration); // EndTime вычисляется динамически
+        return endTime;
     }
 
-    // Сеттер под вопросом
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }
 
-    // Переопределение equals и hashCode для корректного сравнения задач (нужно для списков и проверок пересечений)
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        Task task = (Task) obj;
-        return id == task.id; // Сравнение по ID (предполагаем, что ID уникален)
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", endTime=" + getEndTime() +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+        Task task = (Task) o;
+        return id == task.id;
     }
 
     @Override
     public int hashCode() {
-        return Integer.hashCode(id);
+        return Objects.hash(id);
     }
 
-    public boolean intersects(Task task) {
-        return false;
+    /**
+     * Проверяет пересечение по времени с другой задачей.
+     */
+    public boolean intersects(Task other) {
+        if (this.startTime == null || this.getEndTime() == null ||
+                other.startTime == null || other.getEndTime() == null) {
+            return false;
+        }
+        return !(this.getEndTime().isBefore(other.startTime) || this.startTime.isAfter(other.getEndTime()));
+    }
+
+    public String getName() {
+        return title;
+    }
+
+    public TaskType getType() {
+        return TaskType.TASK; // Для базового Task тип TASK
     }
 }
+

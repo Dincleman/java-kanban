@@ -12,13 +12,28 @@ public class Subtask extends Task {
     }
 
     public Subtask(String title, String description, int epicId) {
-        super();
+        super(title, description, Status.NEW, null, Duration.ZERO);
+        setEpicId(epicId);
     }
 
-    public Subtask(String testSubtask, String desc, Status status, int epicId, LocalDateTime startTime, Duration duration) {
+    public Subtask(String title, String description, Status status, int epicId, LocalDateTime startTime, Duration duration) {
+        super(title, description, status, startTime, duration);
+        setEpicId(epicId);
     }
 
-    public Subtask(String name, String description, Status status, int epicId) {
+    public Subtask(String title, String description, Status status, int epicId) {
+        super(title, description, status, null, Duration.ZERO);
+        setEpicId(epicId);
+    }
+
+    @Override
+    public TaskType getType() {
+        return TaskType.SUBTASK;
+    }
+
+    @Override
+    public String getName() {
+        return getTitle();
     }
 
     public int getEpicId() {
@@ -34,11 +49,15 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return "Tasks.Subtask{" +
+        return "Subtask{" +
                 "id=" + getId() +
                 ", title='" + getTitle() + '\'' +
+                ", description='" + getDescription() + '\'' +
                 ", status=" + getStatus() +
                 ", epicId=" + epicId +
+                ", startTime=" + getStartTime() +
+                ", duration=" + getDuration() +
+                ", endTime=" + getEndTime() +
                 '}';
     }
 }

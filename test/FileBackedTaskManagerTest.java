@@ -1,5 +1,6 @@
-package manager;
-
+import manager.FileBackedTaskManager;
+import manager.ManagerSaveException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import tasks.Status;
@@ -8,16 +9,17 @@ import tasks.Task;
 import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class  FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBackedTaskManager> {
-    private File tempFile;
+class  FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
+    private final LocalDateTime fixedTime = LocalDateTime.now();;
 
     @Override
     protected FileBackedTaskManager createTaskManager() {
         try {
-            tempFile = File.createTempFile("tasks", ".csv");
+            File tempFile = File.createTempFile("tasks", ".csv");
             tempFile.deleteOnExit();
             return new FileBackedTaskManager(tempFile) {
                 //@Override
@@ -30,16 +32,11 @@ class  FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBackedTaskM
         }
     }
 
-    @AfterEach
-    public void tearDown() {
-        super.tearDown();
-        // Если нужно, можно добавить дополнительную очистку файла
-    }
 
     @Test
     void testFileExceptionHandling() {
         File invalidFile = new File("invalid/path.csv");
-        assertThrows(ManagerSaveException.class,
+        Assertions.assertThrows(ManagerSaveException.class,
                 () -> FileBackedTaskManager.loadFromFile(invalidFile),
                 "Загрузка из некорректного файла должна генерировать ManagerSaveException.");
     }
@@ -48,7 +45,7 @@ class  FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBackedTaskM
     void testLoadFromFileRestoresData() {
         Task task = new Task("Loaded Task", "Desc", Status.NEW, fixedTime, Duration.ofHours(1));
         int id = taskManager.addNewTask(task);
-        taskManager.save();
+        taskManager.save(); // Если save() protected, замените на saveToFile() или сделайте public
 
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
         Task loadedTask = loadedManager.getTask(id);
