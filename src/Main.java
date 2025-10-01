@@ -1,4 +1,3 @@
-
 import manager.Managers;
 import manager.TaskManager;
 
@@ -35,22 +34,50 @@ public class Main {
         int subtask1Id = taskManager.addNewSubtask(subtask1);
         int subtask2Id = taskManager.addNewSubtask(subtask2);
 
-        // Получаем задачи и выводим их
-        System.out.println("Задачи:");
-        for (Task task : taskManager.getTasks()) {
+        // Создаем дополнительную задачу для демонстрации пересечения
+        Task task3 = new Task("Задача 3", "Описание задачи 3", now.plusHours(1), Duration.ofHours(2)); // Пересекается с task2
+        int task3Id = taskManager.addNewTask(task3);
+
+        // Проверяем пересечения по времени
+        System.out.println("\nПроверка пересечений по времени:");
+        System.out.println("task1 и task2 пересекаются: " + taskManager.intersects(task1, task2)); // false
+        System.out.println("task1 и epic1 пересекаются: " + taskManager.intersects(task1, epic1)); // false
+        System.out.println("task2 и task3 пересекаются: " + taskManager.intersects(task2, task3)); // true
+        System.out.println("epic1 и subtask1 пересекаются: " + taskManager.intersects(epic1, subtask1)); // false
+        System.out.println("subtask1 и subtask2 пересекаются: " + taskManager.intersects(subtask1, subtask2)); // false
+
+        // Обновляем задачу task2 (изменим время и описание)
+        Task updatedTask2 = new Task("Задача 2 (обновлена)", "Обновленное описание задачи 2", now.plusHours(3), Duration.ofMinutes(90));
+        updatedTask2.setId(task2Id); // обязательно указываем существующий id
+        boolean updated = taskManager.updateTask(updatedTask2);
+        System.out.println("\nОбновление задачи 2 выполнено: " + updated);
+
+        // Обновляем подзадачу subtask1 (изменим время и описание)
+        Subtask updatedSubtask1 = new Subtask("Подзадача 1 (обновлена)", "Обновленное описание подзадачи 1", epic1Id, now.plusHours(7), Duration.ofMinutes(45));
+        updatedSubtask1.setId(subtask1Id);
+        boolean updatedSubtask = taskManager.updateSubtask(updatedSubtask1);
+        System.out.println("Обновление подзадачи 1 выполнено: " + updatedSubtask);
+
+        // Обновляем эпик (например, только название и описание; время и длительность могут не учитываться)
+        Epic updatedEpic1 = new Epic("Эпик 1 (обновлен)", "Обновленное описание эпика 1", null, null);
+        updatedEpic1.setId(epic1Id);
+        boolean updatedEpic = taskManager.updateEpic(updatedEpic1);
+        System.out.println("Обновление эпика 1 выполнено: " + updatedEpic);
+
+        // Выводим обновленные задачи
+        System.out.println("\nОбновленные задачи:");
+        for (Task task : taskManager.getAllTasks()) {
             System.out.println(task);
         }
 
-        // Получаем эпики и выводим их
-        System.out.println("\nЭпики:");
-        for (Epic epic : taskManager.getEpics()) {
-            System.out.println(epic);
+        System.out.println("\nОбновленные подзадачи:");
+        for (Subtask subtask : taskManager.getAllSubtasks()) {
+            System.out.println(subtask);
         }
 
-        // Получаем подзадачи и выводим их
-        System.out.println("\nПодзадачи:");
-        for (Subtask subtask : taskManager.getSubtasks()) {
-            System.out.println(subtask);
+        System.out.println("\nОбновленные эпики:");
+        for (Epic epic : taskManager.getAllEpics()) {
+            System.out.println(epic);
         }
 
         // Получаем историю и выводим ее
