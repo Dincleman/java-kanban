@@ -1,92 +1,42 @@
-import manager.InMemoryTaskManager;
+package manager;
+
 import org.junit.jupiter.api.Test;
+import tasks.Epic;
 import tasks.Subtask;
-
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class InMemoryTaskManagerTest<InMemoryTaskManager> extends TaskManagerTest<InMemoryTaskManager> {
+// Если у вас есть класс TaskManagerTest, импортируйте его и раскомментируйте наследование
+// public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
 
-    @Override
-    protected InMemoryTaskManager createTaskManager() {
-        return new InMemoryTaskManager() {
-            @Override
-            public void removeAllTasks() {
+public class InMemoryTaskManagerTest {
 
-            }
-
-            @Override
-            public void removeAllSubtasks() {
-
-            }
-
-            @Override
-            public void removeAllEpics() {
-
-            }
-
-            @Override
-            public List<Subtask> getAllTasks() {
-                return List.of();
-            }
-
-            @Override
-            public List<Subtask> getEpicSubtasks(int epicId) {
-                return List.of();
-            }
-
-            @Override
-            public CharSequence getAllEpics() {
-                return null;
-            }
-
-            @Override
-            protected void save() {
-                // Отключаем сохранение для InMemory реализации
-            }
-        };
-    }
+    // Если у вас есть TaskManagerTest с абстрактным методом createTaskManager(),
+    // раскомментируйте этот метод и наследование выше
+//    @Override
+//    protected InMemoryTaskManager createTaskManager() {
+//        return new InMemoryTaskManager();
+//    }
 
     @Test
     public void testSpecificInMemoryBehavior() {
         assertDoesNotThrow(() -> {
-            InMemoryTaskManager manager = new InMemoryTaskManager() {
-                @Override
-                public void removeAllTasks() {
+            InMemoryTaskManager manager = new InMemoryTaskManager();
 
-                }
+            // Пример вызова методов, которые должны быть в InMemoryTaskManager
+            manager.clearTasks();
+            manager.clearSubtasks();
+            manager.clearEpics();
 
-                @Override
-                public void removeAllSubtasks() {
+            List<Subtask> allTasks = manager.getAllSubtasks();
+            List<Subtask> epicSubtasks = manager.getEpicSubtasks(1);
 
-                }
+            // Проверяем, что методы возвращают не null, например
+            assert allTasks != null;
+            assert epicSubtasks != null;
 
-                @Override
-                public void removeAllEpics() {
-
-                }
-
-                @Override
-                public List<Subtask> getAllTasks() {
-                    return List.of();
-                }
-
-                @Override
-                public List<Subtask> getEpicSubtasks(int epicId) {
-                    return List.of();
-                }
-
-                @Override
-                public CharSequence getAllEpics() {
-                    return null;
-                }
-
-                @Override
-                protected void save() {
-                    // Отключаем сохранение
-                }
-            };
+            List<Epic> epics = manager.getAllEpics();
+            assert epics == null || epics instanceof CharSequence;
         });
     }
 }

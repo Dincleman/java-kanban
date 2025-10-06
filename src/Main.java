@@ -19,32 +19,32 @@ public class Main {
         Task task2 = new Task("Задача 2", "Описание задачи 2", now.plusHours(2), duration);
 
         // Добавляем задачи
-        int task1Id = taskManager.addNewTask(task1);
-        int task2Id = taskManager.addNewTask(task2);
+        int task1Id = taskManager.addTask(task1);
+        int task2Id = taskManager.addTask(task2);
 
         // Создаем эпик
         Epic epic1 = new Epic("Эпик 1", "Описание эпика 1", now.plusHours(4), duration);
-        int epic1Id = taskManager.addNewEpic(epic1);
+        int epic1Id = taskManager.addEpic(epic1);
 
         // Создаем подзадачи
         Subtask subtask1 = new Subtask("Подзадача 1", "Описание подзадачи 1", epic1Id, now.plusHours(6), duration);
         Subtask subtask2 = new Subtask("Подзадача 2", "Описание подзадачи 2", epic1Id, now.plusHours(8), duration);
 
         // Добавляем подзадачи
-        int subtask1Id = taskManager.addNewSubtask(subtask1);
-        int subtask2Id = taskManager.addNewSubtask(subtask2);
+        int subtask1Id = taskManager.addSubtask(subtask1);
+        int subtask2Id = taskManager.addSubtask(subtask2);
 
         // Создаем дополнительную задачу для демонстрации пересечения
         Task task3 = new Task("Задача 3", "Описание задачи 3", now.plusHours(1), Duration.ofHours(2)); // Пересекается с task2
-        int task3Id = taskManager.addNewTask(task3);
+        int task3Id = taskManager.addTask(task3);
 
-        // Проверяем пересечения по времени
+        // Проверяем пересечения по времени (статический метод вызывается через интерфейс)
         System.out.println("\nПроверка пересечений по времени:");
-        System.out.println("task1 и task2 пересекаются: " + taskManager.intersects(task1, task2)); // false
-        System.out.println("task1 и epic1 пересекаются: " + taskManager.intersects(task1, epic1)); // false
-        System.out.println("task2 и task3 пересекаются: " + taskManager.intersects(task2, task3)); // true
-        System.out.println("epic1 и subtask1 пересекаются: " + taskManager.intersects(epic1, subtask1)); // false
-        System.out.println("subtask1 и subtask2 пересекаются: " + taskManager.intersects(subtask1, subtask2)); // false
+        System.out.println("task1 и task2 пересекаются: " + TaskManager.intersects(task1, task2)); // false
+        System.out.println("task1 и epic1 пересекаются: " + TaskManager.intersects(task1, epic1)); // false
+        System.out.println("task2 и task3 пересекаются: " + TaskManager.intersects(task2, task3)); // true
+        System.out.println("epic1 и subtask1 пересекаются: " + TaskManager.intersects(epic1, subtask1)); // false
+        System.out.println("subtask1 и subtask2 пересекаются: " + TaskManager.intersects(subtask1, subtask2)); // false
 
         // Обновляем задачу task2 (изменим время и описание)
         Task updatedTask2 = new Task("Задача 2 (обновлена)", "Обновленное описание задачи 2", now.plusHours(3), Duration.ofMinutes(90));

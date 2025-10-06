@@ -22,7 +22,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testAddToHistory() {
-        Task task = new Task("Task", "Desc", Status.NEW, fixedTime, Duration.ofHours(1));
+        Task task = new Task("Task", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
         historyManager.add(task);
 
         List<Task> history = historyManager.getHistory();
@@ -38,7 +38,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testDuplicateAddition() {
-        Task task = new Task("Task", "Desc", Status.NEW, fixedTime, Duration.ofHours(1));
+        Task task = new Task("Task", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
         historyManager.add(task);
         historyManager.add(task); // добавляем дубликат
 
@@ -48,8 +48,8 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testRemoveFromStart() {
-        Task task1 = new Task("Task1", "Desc", Status.NEW, fixedTime, Duration.ofHours(1));
-        Task task2 = new Task("Task2", "Desc", Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
+        Task task1 = new Task("Task1", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
+        Task task2 = new Task("Task2", "Desc", Task.Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
         historyManager.add(task1);
         historyManager.add(task2);
 
@@ -62,9 +62,9 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testRemoveFromMiddle() {
-        Task task1 = new Task("Task1", "Desc", Status.NEW, fixedTime, Duration.ofHours(1));
-        Task task2 = new Task("Task2", "Desc", Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
-        Task task3 = new Task("Task3", "Desc", Status.NEW, fixedTime.plusHours(2), Duration.ofHours(1));
+        Task task1 = new Task("Task1", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
+        Task task2 = new Task("Task2", "Desc", Task.Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
+        Task task3 = new Task("Task3", "Desc", Task.Status.NEW, fixedTime.plusHours(2), Duration.ofHours(1));
         historyManager.add(task1);
         historyManager.add(task2);
         historyManager.add(task3);
@@ -79,8 +79,8 @@ class InMemoryHistoryManagerTest {
 
     @Test
     void testRemoveFromEnd() {
-        Task task1 = new Task("Task1", "Desc", Status.NEW, fixedTime, Duration.ofHours(1));
-        Task task2 = new Task("Task2", "Desc", Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
+        Task task1 = new Task("Task1", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
+        Task task2 = new Task("Task2", "Desc", Task.Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
         historyManager.add(task1);
         historyManager.add(task2);
 

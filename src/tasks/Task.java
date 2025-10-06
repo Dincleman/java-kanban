@@ -3,7 +3,6 @@ package tasks;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import tasks.TaskType;
 
 public class Task {
     private int id;
@@ -20,7 +19,21 @@ public class Task {
         DONE
     }
 
-    // Конструктор с параметрами
+    // Конструктор с id, title, description, status, startTime, duration (для FileBackedTaskManager)
+    public Task(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status != null ? status : Status.NEW;
+        this.startTime = startTime;
+        this.duration = duration != null ? duration : Duration.ZERO;
+        // Вычисляем endTime, если возможно
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
+    }
+
+    // Конструктор с параметрами (без id, для обратной совместимости)
     public Task(String title, String description, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
@@ -33,7 +46,7 @@ public class Task {
         }
     }
 
-    // Конструктор с явным статусом
+    // Конструктор с явным статусом (без id, для обратной совместимости)
     public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.title = title;
         this.description = description;
@@ -46,10 +59,12 @@ public class Task {
         }
     }
 
+    // Конструктор с title, description, status (без id и времени, для обратной совместимости)
     public Task(String title, String description, Status status) {
         this(title, description, status, null, Duration.ZERO);
     }
 
+    // Конструктор по умолчанию
     public Task() {
         this("", "", Status.NEW, null, Duration.ZERO);
     }
@@ -167,4 +182,3 @@ public class Task {
         return TaskType.TASK; // Для базового Task тип TASK
     }
 }
-
