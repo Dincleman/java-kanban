@@ -3,6 +3,7 @@ import manager.TaskManager;
 //import TaskManagerTest;
 import org.junit.jupiter.api.Test;
 import tasks.Task;
+import tasks.TaskNotFoundException;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -30,7 +31,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
 
         // Удаляем task1
         manager.removeTask(id1);
-        assertNull(manager.getTask(id1), "Задача должна быть удалена");
+        assertThrows(TaskNotFoundException.class, () -> manager.getTask(id1));
         assertEquals(1, manager.getAllTasks().size());
 
         // --- Проверка приоритетов ---
