@@ -58,7 +58,6 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         assertTrue(TaskManager.intersects(task2, taskOverlap), "Задачи должны пересекаться");
         assertFalse(TaskManager.intersects(task3, task2), "Задачи не должны пересекаться");
 
-        // --- Проверка clearAll ---
         manager.clearAll();
         assertTrue(manager.getAllTasks().isEmpty(), "Все задачи должны быть удалены");
         assertTrue(manager.getAllSubtasks().isEmpty(), "Все подзадачи должны быть удалены");
