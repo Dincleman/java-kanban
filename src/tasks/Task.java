@@ -19,7 +19,7 @@ public class Task {
         DONE
     }
 
-    // Конструктор с id, title, description, status, startTime, duration (для FileBackedTaskManager)
+    // Конструктор с id, title, description, status, startTime, duration
     public Task(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.id = id;
         this.title = title;
@@ -34,39 +34,24 @@ public class Task {
     }
 
     // Конструктор с параметрами (без id, для обратной совместимости)
-    public Task(String title, String description, LocalDateTime startTime, Duration duration) {
-        this.title = title;
-        this.description = description;
-        this.status = Status.NEW;
-        this.startTime = startTime;
-        this.duration = duration != null ? duration : Duration.ZERO;
-        // Вычисляем endTime, если возможно
-        if (startTime != null && duration != null) {
-            this.endTime = startTime.plus(duration);
-        }
+    // Важно, чтобы он правильно ссылался на конструктор с 5 параметрами
+    public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this(0, title, description, status, startTime, duration);  // Вызов конструктора с 5 параметрами (id по умолчанию 0)
     }
 
-    // Конструктор с явным статусом (без id, для обратной совместимости)
-    public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
-        this.title = title;
-        this.description = description;
-        this.status = status != null ? status : Status.NEW;
-        this.startTime = startTime;
-        this.duration = duration != null ? duration : Duration.ZERO;
-        // Вычисляем endTime, если возможно
-        if (startTime != null && duration != null) {
-            this.endTime = startTime.plus(duration);
-        }
+    // Конструктор с параметрами (без id, для обратной совместимости)
+    public Task(String title, String description, LocalDateTime startTime, Duration duration) {
+        this(title, description, Status.NEW, startTime, duration);  // Вызов конструктора с 5 параметрами
     }
 
     // Конструктор с title, description, status (без id и времени, для обратной совместимости)
     public Task(String title, String description, Status status) {
-        this(title, description, status, null, Duration.ZERO);
+        this(title, description, status, null, Duration.ZERO);  // Вызов конструктора с 5 параметрами
     }
 
     // Конструктор по умолчанию
     public Task() {
-        this("", "", Status.NEW, null, Duration.ZERO);
+        this("", "", Status.NEW, null, Duration.ZERO);  // Вызов конструктора с 5 параметрами
     }
 
     // Геттеры и сеттеры
@@ -180,5 +165,41 @@ public class Task {
 
     public TaskType getType() {
         return TaskType.TASK; // Для базового Task тип TASK
+    }
+
+    // Методы для изменения статуса задачи
+
+    /**
+     * Запускает задачу, меняет её статус на IN_PROGRESS.
+     */
+    public void startTask() {
+        if (this.status == Status.NEW) {
+            this.status = Status.IN_PROGRESS;
+        }
+    }
+
+    /**
+     * Завершает задачу, меняет её статус на DONE.
+     */
+    public void completeTask() {
+        if (this.status == Status.IN_PROGRESS) {
+            this.status = Status.DONE;
+        }
+    }
+
+    /**
+     * Проверяет, можно ли начать задачу.
+     * Возвращает true, если задача в статусе NEW и имеет время начала.
+     */
+    public boolean canStart() {
+        return this.status == Status.NEW && this.startTime != null;
+    }
+
+    /**
+     * Проверяет, можно ли завершить задачу.
+     * Возвращает true, если задача в статусе IN_PROGRESS и имеет время окончания.
+     */
+    public boolean canComplete() {
+        return this.status == Status.IN_PROGRESS && this.endTime != null;
     }
 }
