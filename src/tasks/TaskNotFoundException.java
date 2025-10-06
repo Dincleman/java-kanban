@@ -1,4 +1,4 @@
-package manager;
+package tasks;
 
 public class TaskNotFoundException extends RuntimeException {
     public TaskNotFoundException(String message) {
