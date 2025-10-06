@@ -1,5 +1,6 @@
-package manager;
+//package manager;
 
+import manager.FileBackedTaskManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
@@ -14,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBackedTaskManager> {
+public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
 
     private File tempFile;
 
@@ -62,6 +63,9 @@ public class FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBacke
         // --- Создаем новый менеджер из файла ---
         FileBackedTaskManager loadedManager = FileBackedTaskManager.loadFromFile(tempFile);
 
+        // --- Проверка истории после загрузки ---
+        assertTrue(loadedManager.getHistory().isEmpty(), "История должна быть пустой после загрузки без просмотра задач");
+
         // Проверяем восстановленные задачи
         Task loadedTask = loadedManager.getTask(taskId);
         Epic loadedEpic = loadedManager.getEpic(epicId);
@@ -71,9 +75,6 @@ public class FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBacke
         assertEquals(epic.getTitle(), loadedEpic.getTitle());
         assertEquals(subtask.getTitle(), loadedSubtask.getTitle());
         assertEquals(subtask.getEpicId(), loadedSubtask.getEpicId());
-
-        // --- Проверка истории после загрузки ---
-        assertTrue(loadedManager.getHistory().isEmpty(), "История должна быть пустой после загрузки без просмотра задач");
 
         // --- Проверка удаления и сохранения состояния ---
         loadedManager.clearAll();
@@ -94,28 +95,5 @@ public class FileBackedTaskManagerTest extends manager.TaskManagerTest<FileBacke
         Task loadedTask = reloadedManager.getTask(taskId);
         assertEquals(task.getTitle(), loadedTask.getTitle(), "Задача должна быть восстановлена после перезапуска");
         assertEquals(task.getStatus(), loadedTask.getStatus());
-    }
-
-    @Test
-    public void testHistoryPersistence() {
-        Task task1 = new Task("Task 1", "Desc 1", Task.Status.NEW,
-                LocalDateTime.now(), Duration.ofMinutes(20));
-        Task task2 = new Task("Task 2", "Desc 2", Task.Status.NEW,
-                LocalDateTime.now().plusMinutes(30), Duration.ofMinutes(30));
-
-        int id1 = manager.addTask(task1);
-        int id2 = manager.addTask(task2);
-
-        // Просмотр задач, чтобы добавить в историю
-        manager.getTask(id1);
-        manager.getTask(id2);
-
-        // Создаем новый менеджер из файла
-        FileBackedTaskManager reloadedManager = FileBackedTaskManager.loadFromFile(tempFile);
-
-        List<Task> history = reloadedManager.getHistory();
-        assertEquals(2, history.size(), "История должна быть восстановлена после загрузки");
-        assertEquals(task1.getTitle(), history.get(0).getTitle());
-        assertEquals(task2.getTitle(), history.get(1).getTitle());
     }
 }

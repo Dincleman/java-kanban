@@ -74,9 +74,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                     if (task.getId() >= nextId) {
                         nextId = task.getId() + 1;
                     }
-                } else {
-                    // Здесь можно добавить логику загрузки истории, если нужно
-                    // Пока оставим пустым
                 }
             }
             // После загрузки обновляем статусы и время эпиков
@@ -141,7 +138,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             }
             writer.newLine();
             writer.write("history\n");
-            // Здесь можно добавить сохранение истории, если требуется
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении данных в файл: " + file.getPath(), e);
         }

@@ -1,11 +1,12 @@
-package manager;
+//package tasks;
 
+import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
-//import manager.TaskManager;
+import manager.TaskManager;
 import tasks.TaskNotFoundException;
 
 import java.time.Duration;
@@ -103,8 +104,11 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("Epic 1", "Description 1");
         int epicId = manager.addEpic(epic);
 
-        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", Task.Status.NEW, epicId, LocalDateTime.now(), Duration.ofMinutes(60));
-        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", Task.Status.NEW, epicId, LocalDateTime.now(), Duration.ofMinutes(60));
+        Subtask subtask1 = new Subtask("Subtask 1", "Description 1", epicId, LocalDateTime.now(), Duration.ofMinutes(60));
+        epic.addSubtask(subtask1);
+
+        Subtask subtask2 = new Subtask("Subtask 2", "Description 2", epicId, LocalDateTime.now(), Duration.ofMinutes(60));
+        epic.addSubtask(subtask2);
 
         manager.addSubtask(subtask1);
         manager.addSubtask(subtask2);
