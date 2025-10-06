@@ -54,7 +54,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
 
         // --- Проверка пересечения задач ---
         Task taskOverlap = new Task("Overlap", "Desc", Task.Status.NEW,
-                LocalDateTime.of(2025, 10, 6, 9, 30), Duration.ofMinutes(30));
+                LocalDateTime.of(2025, 10, 6, 10, 00), Duration.ofMinutes(30));
         assertTrue(TaskManager.intersects(task2, taskOverlap), "Задачи должны пересекаться");
         assertFalse(TaskManager.intersects(task3, task2), "Задачи не должны пересекаться");
 
