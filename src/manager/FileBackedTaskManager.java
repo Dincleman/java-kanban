@@ -13,6 +13,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(File file) {
         this.file = file;
+        createFileIfNotExists(file);
         loadFromFileInternal(file);
     }
 
@@ -22,6 +23,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
      */
     public static FileBackedTaskManager loadFromFile(File file) {
         return new FileBackedTaskManager(file);
+    }
+
+    /**
+     * Создаёт файл, если его не существует.
+     */
+    private void createFileIfNotExists(File file) {
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при создании файла: " + file.getPath(), e);
+        }
     }
 
     /**

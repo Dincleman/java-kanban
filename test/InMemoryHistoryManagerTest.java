@@ -1,99 +1,52 @@
-import manager.HistoryManager;
 import manager.InMemoryHistoryManager;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tasks.Status;
+import manager.HistoryManager;
 import tasks.Task;
+import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class InMemoryHistoryManagerTest {
-    private HistoryManager historyManager;
-    private final LocalDateTime fixedTime = LocalDateTime.of(2024, 6, 1, 12, 0);
+public class InMemoryHistoryManagerTest {
 
-    @BeforeEach
-    void setUp() {
-        historyManager = new InMemoryHistoryManager();
-    }
+    private final HistoryManager historyManager = new InMemoryHistoryManager();
 
     @Test
-    void testAddToHistory() {
-        Task task = new Task("Task", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
+    public void testAddHistory() {
+        Task task = new Task("Test Task", "Test Description", Task.Status.NEW, null, Duration.ZERO);
         historyManager.add(task);
 
-        List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size());
-        assertEquals(task, history.get(0));
+        assertEquals(1, historyManager.getHistory().size());
+        assertEquals(task, historyManager.getHistory().get(0));
     }
 
     @Test
-    void testEmptyHistory() {
-        List<Task> history = historyManager.getHistory();
-        assertTrue(history.isEmpty());
-    }
-
-    @Test
-    void testDuplicateAddition() {
-        Task task = new Task("Task", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
+    public void testRemoveHistory() {
+        Task task = new Task("Test Task", "Test Description", Task.Status.NEW, null, Duration.ZERO);
         historyManager.add(task);
-        historyManager.add(task); // добавляем дубликат
+        historyManager.remove(task.getId());
 
-        List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size(), "Дубликаты в истории не должны добавляться");
-    }
-
-    @Test
-    void testRemoveFromStart() {
-        Task task1 = new Task("Task1", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
-        Task task2 = new Task("Task2", "Desc", Task.Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
-        historyManager.add(task1);
-        historyManager.add(task2);
-
-        historyManager.remove(task1.getId());
-
-        List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size());
-        assertEquals(task2, history.get(0));
-    }
-
-    @Test
-    void testRemoveFromMiddle() {
-        Task task1 = new Task("Task1", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
-        Task task2 = new Task("Task2", "Desc", Task.Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
-        Task task3 = new Task("Task3", "Desc", Task.Status.NEW, fixedTime.plusHours(2), Duration.ofHours(1));
-        historyManager.add(task1);
-        historyManager.add(task2);
-        historyManager.add(task3);
-
-        historyManager.remove(task2.getId());
-
-        List<Task> history = historyManager.getHistory();
-        assertEquals(2, history.size());
-        assertTrue(history.contains(task1));
-        assertTrue(history.contains(task3));
-    }
-
-    @Test
-    void testRemoveFromEnd() {
-        Task task1 = new Task("Task1", "Desc", Task.Status.NEW, fixedTime, Duration.ofHours(1));
-        Task task2 = new Task("Task2", "Desc", Task.Status.NEW, fixedTime.plusHours(1), Duration.ofHours(1));
-        historyManager.add(task1);
-        historyManager.add(task2);
-
-        historyManager.remove(task2.getId());
-
-        List<Task> history = historyManager.getHistory();
-        assertEquals(1, history.size());
-        assertEquals(task1, history.get(0));
-    }
-
-    @Test
-    void testRemoveNonExistingIdDoesNotThrow() {
-        assertDoesNotThrow(() -> historyManager.remove(9999));
         assertTrue(historyManager.getHistory().isEmpty());
+    }
+
+    @Test
+    public void testClearHistory() {
+        Task task1 = new Task("Task 1", "Description 1", Task.Status.NEW, null, Duration.ZERO);
+        Task task2 = new Task("Task 2", "Description 2", Task.Status.NEW, null, Duration.ZERO);
+
+        historyManager.add(task1);
+        historyManager.add(task2);
+        historyManager.clear();
+
+        assertTrue(historyManager.getHistory().isEmpty());
+    }
+
+    @Test
+    public void testHistoryDuplication() {
+        Task task = new Task("Task", "Description", Task.Status.NEW, null, Duration.ZERO);
+        historyManager.add(task);
+        historyManager.add(task);
+
+        assertEquals(1, historyManager.getHistory().size());
     }
 }

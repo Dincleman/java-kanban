@@ -1,42 +1,68 @@
-package manager;
-
+import manager.InMemoryTaskManager;
+import manager.TaskManager;
+import manager.TaskManagerTest;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Subtask;
-import java.util.List;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import tasks.Task;
 
-// Если у вас есть класс TaskManagerTest, импортируйте его и раскомментируйте наследование
-// public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+import java.time.Duration;
+import java.time.LocalDateTime;
 
-public class InMemoryTaskManagerTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    // Если у вас есть TaskManagerTest с абстрактным методом createTaskManager(),
-    // раскомментируйте этот метод и наследование выше
-//    @Override
-//    protected InMemoryTaskManager createTaskManager() {
-//        return new InMemoryTaskManager();
-//    }
+public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager> {
+
+    @Override
+    protected InMemoryTaskManager createTaskManager() {
+        return new InMemoryTaskManager();
+    }
 
     @Test
-    public void testSpecificInMemoryBehavior() {
-        assertDoesNotThrow(() -> {
-            InMemoryTaskManager manager = new InMemoryTaskManager();
+    public void testInMemorySpecificFunctionality() {
+        // --- Проверка добавления и удаления нескольких задач ---
+        Task task1 = new Task("Task 1", "Desc 1", Task.Status.NEW,
+                LocalDateTime.of(2025, 10, 6, 9, 0), Duration.ofMinutes(30));
+        Task task2 = new Task("Task 2", "Desc 2", Task.Status.NEW,
+                LocalDateTime.of(2025, 10, 6, 10, 0), Duration.ofMinutes(45));
+        int id1 = manager.addTask(task1);
+        int id2 = manager.addTask(task2);
 
-            // Пример вызова методов, которые должны быть в InMemoryTaskManager
-            manager.clearTasks();
-            manager.clearSubtasks();
-            manager.clearEpics();
+        assertEquals(2, manager.getAllTasks().size());
 
-            List<Subtask> allTasks = manager.getAllSubtasks();
-            List<Subtask> epicSubtasks = manager.getEpicSubtasks(1);
+        // Удаляем task1
+        manager.removeTask(id1);
+        assertNull(manager.getTask(id1), "Задача должна быть удалена");
+        assertEquals(1, manager.getAllTasks().size());
 
-            // Проверяем, что методы возвращают не null, например
-            assert allTasks != null;
-            assert epicSubtasks != null;
+        // --- Проверка приоритетов ---
+        Task task3 = new Task("Task 3", "Desc 3", Task.Status.NEW,
+                LocalDateTime.of(2025, 10, 6, 8, 0), Duration.ofMinutes(60));
+        manager.addTask(task3);
 
-            List<Epic> epics = manager.getAllEpics();
-            assert epics == null || epics instanceof CharSequence;
-        });
+        // Приоритетные задачи должны быть отсортированы по startTime
+        var prioritized = manager.getPrioritizedTasks();
+        assertEquals(task3, prioritized.get(0), "Task 3 должна быть первой в приоритетах");
+        assertEquals(task2, prioritized.get(1), "Task 2 должна быть второй в приоритетах");
+
+        // --- Проверка истории ---
+        manager.getTask(id2);
+        manager.getTask(task3.getId());
+        var history = manager.getHistory();
+        assertEquals(2, history.size());
+        assertEquals(id2, history.get(0).getId());
+        assertEquals(task3.getId(), history.get(1).getId());
+
+        // --- Проверка пересечения задач ---
+        Task taskOverlap = new Task("Overlap", "Desc", Task.Status.NEW,
+                LocalDateTime.of(2025, 10, 6, 9, 30), Duration.ofMinutes(30));
+        assertTrue(TaskManager.intersects(task2, taskOverlap), "Задачи должны пересекаться");
+        assertFalse(TaskManager.intersects(task3, task2), "Задачи не должны пересекаться");
+
+        // --- Проверка clearAll ---
+        manager.clearAll();
+        assertTrue(manager.getAllTasks().isEmpty(), "Все задачи должны быть удалены");
+        assertTrue(manager.getAllSubtasks().isEmpty(), "Все подзадачи должны быть удалены");
+        assertTrue(manager.getAllEpics().isEmpty(), "Все эпики должны быть удалены");
+        assertTrue(manager.getHistory().isEmpty(), "История должна быть очищена");
     }
+
 }

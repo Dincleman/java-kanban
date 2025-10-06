@@ -52,10 +52,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history;
     }
 
-    @Override
-    public void clear() {
-
-    }
 
     private void linkLast(Task task) {
         Node newNode = new Node(task);
@@ -86,5 +82,12 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
         node.prev = null;
         node.next = null;
+    }
+
+    @Override
+    public void clear() {
+        head = null;
+        tail = null;
+        historyMap.clear();
     }
 }
