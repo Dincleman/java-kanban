@@ -1,4 +1,3 @@
-import manager.InMemoryTaskManager;
 import manager.Managers;
 import manager.TaskManager;
 
@@ -34,10 +33,6 @@ public class Main {
         // Добавляем подзадачи
         int subtask1Id = taskManager.addSubtask(subtask1);
         int subtask2Id = taskManager.addSubtask(subtask2);
-
-        // Создаем дополнительную задачу для демонстрации пересечения
-        Task task3 = new Task("Задача 3", "Описание задачи 3", now.plusHours(1), Duration.ofHours(2)); // Пересекается с task2
-        int task3Id = taskManager.addTask(task3);
 
         // Обновляем задачу task2 (изменим время и описание)
         Task updatedTask2 = new Task("Задача 2 (обновлена)", "Обновленное описание задачи 2", now.plusHours(3), Duration.ofMinutes(90));
