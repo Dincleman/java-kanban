@@ -13,7 +13,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public FileBackedTaskManager(File file) {
         this.file = file;
-        createFileIfNotExists(file);
         loadFromFileInternal(file);
     }
 
@@ -26,19 +25,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     /**
-     * Создаёт файл, если его не существует.
-     */
-    private void createFileIfNotExists(File file) {
-        try {
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при создании файла: " + file.getPath(), e);
-        }
-    }
-
-    /**
      * Приватный метод загрузки данных из файла.
      */
     private void loadFromFileInternal(File file) {
@@ -46,34 +32,27 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             String content = Files.readString(Path.of(file.getPath()));
             String[] lines = content.split("\n");
 
-            boolean isHistory = false;
             for (String line : lines) {
                 line = line.trim();
                 if (line.isEmpty()) continue;
-                if (line.equals("history")) {
-                    isHistory = true;
+                if (line.startsWith("id,")) {
+                    // Пропускаем заголовок CSV
                     continue;
                 }
-                if (!isHistory) {
-                    if (line.startsWith("id,")) {
-                        // Пропускаем заголовок CSV
-                        continue;
+                Task task = this.fromString(line);
+                if (task instanceof Epic epic) {
+                    epics.put(epic.getId(), epic);
+                } else if (task instanceof Subtask subtask) {
+                    subtasks.put(subtask.getId(), subtask);
+                    Epic epic = epics.get(subtask.getEpicId());
+                    if (epic != null) {
+                        epic.addSubtask(subtask);
                     }
-                    Task task = fromString(line);
-                    if (task instanceof Epic epic) {
-                        epics.put(epic.getId(), epic);
-                    } else if (task instanceof Subtask subtask) {
-                        subtasks.put(subtask.getId(), subtask);
-                        Epic epic = epics.get(subtask.getEpicId());
-                        if (epic != null) {
-                            epic.addSubtask(subtask);
-                        }
-                    } else {
-                        tasks.put(task.getId(), task);
-                    }
-                    if (task.getId() >= nextId) {
-                        nextId = task.getId() + 1;
-                    }
+                } else {
+                    tasks.put(task.getId(), task);
+                }
+                if (task.getId() >= nextId) {
+                    nextId = task.getId() + 1;
                 }
             }
             // После загрузки обновляем статусы и время эпиков
@@ -101,7 +80,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         int id = Integer.parseInt(parts[0]);
         String type = parts[1];
         String title = parts[2];
-        Task.Status status = Task.Status.valueOf(parts[3]);
+        Status status = Status.valueOf(parts[3]);
         String description = parts[4];
         LocalDateTime startTime = "null".equals(parts[5]) ? null : LocalDateTime.parse(parts[5]);
         Duration duration = "null".equals(parts[6]) ? null : Duration.ofMinutes(Long.parseLong(parts[6]));
@@ -136,8 +115,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 writer.write(toString(subtask));
                 writer.newLine();
             }
-            writer.newLine();
-            writer.write("history\n");
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка при сохранении данных в файл: " + file.getPath(), e);
         }

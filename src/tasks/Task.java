@@ -13,12 +13,6 @@ public class Task {
     private LocalDateTime startTime;
     private LocalDateTime endTime; // Добавлено поле для хранения времени окончания
 
-    public enum Status {
-        NEW,
-        IN_PROGRESS,
-        DONE
-    }
-
     // Конструктор с id, title, description, status, startTime, duration
     public Task(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {
         this.id = id;
@@ -148,16 +142,6 @@ public class Task {
         return Objects.hash(id);
     }
 
-    /**
-     * Проверяет пересечение по времени с другой задачей.
-     */
-    public boolean intersects(Task other) {
-        if (this.startTime == null || this.getEndTime() == null ||
-                other.startTime == null || other.getEndTime() == null) {
-            return false;
-        }
-        return !(this.getEndTime().isBefore(other.startTime) || this.startTime.isAfter(other.getEndTime()));
-    }
 
     public String getName() {
         return title;
@@ -168,15 +152,6 @@ public class Task {
     }
 
     // Методы для изменения статуса задачи
-
-    /**
-     * Запускает задачу, меняет её статус на IN_PROGRESS.
-     */
-    public void startTask() {
-        if (this.status == Status.NEW) {
-            this.status = Status.IN_PROGRESS;
-        }
-    }
 
     /**
      * Завершает задачу, меняет её статус на DONE.

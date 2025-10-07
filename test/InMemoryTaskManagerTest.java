@@ -1,7 +1,6 @@
 import manager.InMemoryTaskManager;
-import manager.TaskManager;
-//import TaskManagerTest;
 import org.junit.jupiter.api.Test;
+import tasks.Status;
 import tasks.Task;
 import tasks.TaskNotFoundException;
 
@@ -20,9 +19,9 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
     @Test
     public void testInMemorySpecificFunctionality() {
         // --- Проверка добавления и удаления нескольких задач ---
-        Task task1 = new Task("Task 1", "Desc 1", Task.Status.NEW,
+        Task task1 = new Task("Task 1", "Desc 1", Status.NEW,
                 LocalDateTime.of(2025, 10, 6, 9, 0), Duration.ofMinutes(30));
-        Task task2 = new Task("Task 2", "Desc 2", Task.Status.NEW,
+        Task task2 = new Task("Task 2", "Desc 2", Status.NEW,
                 LocalDateTime.of(2025, 10, 6, 10, 0), Duration.ofMinutes(45));
         int id1 = manager.addTask(task1);
         int id2 = manager.addTask(task2);
@@ -35,7 +34,7 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         assertEquals(1, manager.getAllTasks().size());
 
         // --- Проверка приоритетов ---
-        Task task3 = new Task("Task 3", "Desc 3", Task.Status.NEW,
+        Task task3 = new Task("Task 3", "Desc 3", Status.NEW,
                 LocalDateTime.of(2025, 10, 6, 8, 0), Duration.ofMinutes(60));
         manager.addTask(task3);
 
@@ -53,10 +52,10 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         assertEquals(task3.getId(), history.get(1).getId());
 
         // --- Проверка пересечения задач ---
-        Task taskOverlap = new Task("Overlap", "Desc", Task.Status.NEW,
+        Task taskOverlap = new Task("Overlap", "Desc", Status.NEW,
                 LocalDateTime.of(2025, 10, 6, 10, 00), Duration.ofMinutes(30));
-        assertTrue(TaskManager.intersects(task2, taskOverlap), "Задачи должны пересекаться");
-        assertFalse(TaskManager.intersects(task3, task2), "Задачи не должны пересекаться");
+        assertTrue(InMemoryTaskManager.intersects(task2, taskOverlap), "Задачи должны пересекаться");
+        assertFalse(InMemoryTaskManager.intersects(task3, task2), "Задачи не должны пересекаться");
 
         manager.clearAll();
         assertTrue(manager.getAllTasks().isEmpty(), "Все задачи должны быть удалены");

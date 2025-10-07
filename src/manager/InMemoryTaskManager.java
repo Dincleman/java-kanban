@@ -1,12 +1,11 @@
 package manager;
 
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import tasks.TaskNotFoundException;
+import tasks.*;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class InMemoryTaskManager implements TaskManager {
     protected final Map<Integer, Task> tasks = new HashMap<>();
@@ -262,73 +261,73 @@ public class InMemoryTaskManager implements TaskManager {
         boolean allDone = true;
         boolean anyInProgress = false;
         for (Subtask subtask : epic.getSubtasks()) {
-            if (subtask.getStatus() != Task.Status.DONE) {
+            if (subtask.getStatus() != Status.DONE) {
                 allDone = false;
             }
-            if (subtask.getStatus() == Task.Status.IN_PROGRESS) {
+            if (subtask.getStatus() == Status.IN_PROGRESS) {
                 anyInProgress = true;
             }
         }
         if (allDone) {
-            epic.setStatus(Task.Status.DONE);
+            epic.setStatus(Status.DONE);
         } else if (anyInProgress) {
-            epic.setStatus(Task.Status.IN_PROGRESS);
+            epic.setStatus(Status.IN_PROGRESS);
         } else {
-            epic.setStatus(Task.Status.NEW);
+            epic.setStatus(Status.NEW);
         }
     }
 
-       protected void updateEpicTime(Epic epic) {
+    protected void updateEpicTime(Epic epic) {
         if (epic.getSubtasks().isEmpty()) {
             epic.setStartTime(null);
             epic.setDuration(Duration.ZERO);
             epic.setEndTime(null);
             return;
         }
-        LocalDateTime earliestStart = null;
-        LocalDateTime latestEnd = null;
-        Duration totalDuration = Duration.ZERO;
-        for (Subtask subtask : epic.getSubtasks()) {
-            if (subtask.getStartTime() != null) {
-                if (earliestStart == null || subtask.getStartTime().isBefore(earliestStart)) {
-                    earliestStart = subtask.getStartTime();
-                }
-                if (subtask.getEndTime() != null) {
-                    if (latestEnd == null || subtask.getEndTime().isAfter(latestEnd)) {
-                        latestEnd = subtask.getEndTime();
-                    }
-                }
-            }
-            if (subtask.getDuration() != null) {
-                totalDuration = totalDuration.plus(subtask.getDuration());
-            }
-        }
-        epic.setStartTime(earliestStart);
+
+        Optional<LocalDateTime> earliestStart = epic.getSubtasks().stream()
+                .map(Subtask::getStartTime)
+                .min(Comparator.naturalOrder());
+
+        Duration totalDuration = epic.getSubtasks().stream()
+                .map(Subtask::getDuration)
+                .reduce(Duration.ZERO, Duration::plus);
+
+        epic.setStartTime(earliestStart.get());
         epic.setDuration(totalDuration);
-        epic.setEndTime(latestEnd);
+        epic.setEndTime(earliestStart.get().plus(totalDuration));
+    }
+
+    /*  /**
+     * Проверка пересечения по времени двух задач.
+     * @param task1 первая задача
+     * @param task2 вторая задача
+     * @return true, если задачи пересекаются по времени, иначе false
+     */
+    public static boolean intersects(Task task1, Task task2) {
+        if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null) {
+            return false;
+        }
+        LocalDateTime start1 = task1.getStartTime();
+        LocalDateTime end1 = task1.getEndTime();
+        LocalDateTime start2 = task2.getStartTime();
+        LocalDateTime end2 = task2.getEndTime();
+        return end1.isAfter(start2) && end2.isAfter(start1);
     }
 
     protected void addToPrioritized(Task task) {
         if (task.getStartTime() != null) {
+            List<Task> tmpTaskList = prioritizedTasks.stream()
+                    .filter(fTask -> InMemoryTaskManager.intersects(task, fTask))
+                    .collect(Collectors.toList());
+            if (!tmpTaskList.isEmpty())
+                System.out.println("Внимание, добавляемая задача пересекается с другими");
             prioritizedTasks.add(task);
         }
     }
 
     protected void removeFromPrioritized(Task task) {
         prioritizedTasks.remove(task);
-    }
-
-    // Геттеры для доступа к коллекциям из FileBackedTaskManager
-    public Map<Integer, Task> getTasks() {
-        return tasks;
-    }
-
-    public Map<Integer, Epic> getEpics() {
-        return epics;
-    }
-
-    public Map<Integer, Subtask> getSubtasks() {
-        return subtasks;
     }
 
     public void setNextId(int nextId) {

@@ -1,3 +1,4 @@
+import manager.InMemoryTaskManager;
 import manager.Managers;
 import manager.TaskManager;
 
@@ -40,11 +41,11 @@ public class Main {
 
         // Проверяем пересечения по времени (статический метод вызывается через интерфейс)
         System.out.println("\nПроверка пересечений по времени:");
-        System.out.println("task1 и task2 пересекаются: " + TaskManager.intersects(task1, task2)); // false
-        System.out.println("task1 и epic1 пересекаются: " + TaskManager.intersects(task1, epic1)); // false
-        System.out.println("task2 и task3 пересекаются: " + TaskManager.intersects(task2, task3)); // true
-        System.out.println("epic1 и subtask1 пересекаются: " + TaskManager.intersects(epic1, subtask1)); // false
-        System.out.println("subtask1 и subtask2 пересекаются: " + TaskManager.intersects(subtask1, subtask2)); // false
+        System.out.println("task1 и task2 пересекаются: " + InMemoryTaskManager.intersects(task1, task2)); // false
+        System.out.println("task1 и epic1 пересекаются: " + InMemoryTaskManager.intersects(task1, epic1)); // false
+        System.out.println("task2 и task3 пересекаются: " + InMemoryTaskManager.intersects(task2, task3)); // true
+        System.out.println("epic1 и subtask1 пересекаются: " + InMemoryTaskManager.intersects(epic1, subtask1)); // false
+        System.out.println("subtask1 и subtask2 пересекаются: " + InMemoryTaskManager.intersects(subtask1, subtask2)); // false
 
         // Обновляем задачу task2 (изменим время и описание)
         Task updatedTask2 = new Task("Задача 2 (обновлена)", "Обновленное описание задачи 2", now.plusHours(3), Duration.ofMinutes(90));

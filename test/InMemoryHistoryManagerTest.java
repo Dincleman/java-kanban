@@ -1,5 +1,6 @@
 import manager.InMemoryHistoryManager;
 import manager.HistoryManager;
+import tasks.Status;
 import tasks.Task;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +14,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void testAddHistory() {
-        Task task = new Task("Test Task", "Test Description", Task.Status.NEW, null, Duration.ZERO);
+        Task task = new Task("Test Task", "Test Description", Status.NEW, null, Duration.ZERO);
         historyManager.add(task);
 
         assertEquals(1, historyManager.getHistory().size());
@@ -22,7 +23,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void testRemoveHistory() {
-        Task task = new Task("Test Task", "Test Description", Task.Status.NEW, null, Duration.ZERO);
+        Task task = new Task("Test Task", "Test Description", Status.NEW, null, Duration.ZERO);
         historyManager.add(task);
         historyManager.remove(task.getId());
 
@@ -31,8 +32,8 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void testClearHistory() {
-        Task task1 = new Task("Task 1", "Description 1", Task.Status.NEW, null, Duration.ZERO);
-        Task task2 = new Task("Task 2", "Description 2", Task.Status.NEW, null, Duration.ZERO);
+        Task task1 = new Task("Task 1", "Description 1", Status.NEW, null, Duration.ZERO);
+        Task task2 = new Task("Task 2", "Description 2", Status.NEW, null, Duration.ZERO);
 
         historyManager.add(task1);
         historyManager.add(task2);
@@ -43,7 +44,7 @@ public class InMemoryHistoryManagerTest {
 
     @Test
     public void testHistoryDuplication() {
-        Task task = new Task("Task", "Description", Task.Status.NEW, null, Duration.ZERO);
+        Task task = new Task("Task", "Description", Status.NEW, null, Duration.ZERO);
         historyManager.add(task);
         historyManager.add(task);
 

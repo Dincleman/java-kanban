@@ -1,13 +1,8 @@
-//package tasks;
-
+import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tasks.Epic;
-import tasks.Subtask;
-import tasks.Task;
-import manager.TaskManager;
-import tasks.TaskNotFoundException;
+import tasks.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,7 +24,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void testAddTask() {
-        Task task = new Task("Task 1", "Description 1", Task.Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
+        Task task = new Task("Task 1", "Description 1", Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
         int taskId = manager.addTask(task);
         Task loadedTask = manager.getTask(taskId);
 
@@ -42,7 +37,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
         Epic epic = new Epic("Epic 1", "Description 1", LocalDateTime.now(), Duration.ofMinutes(120));
         int epicId = manager.addEpic(epic);
 
-        Subtask subtask = new Subtask("Subtask 1", "Description 1", Task.Status.NEW, epicId, LocalDateTime.now(), Duration.ofMinutes(60));
+        Subtask subtask = new Subtask("Subtask 1", "Description 1", Status.NEW, epicId, LocalDateTime.now(), Duration.ofMinutes(60));
         int subtaskId = manager.addSubtask(subtask);
 
         Subtask loadedSubtask = manager.getSubtask(subtaskId);
@@ -62,10 +57,10 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void testUpdateTask() {
-        Task task = new Task("Task 1", "Description 1", Task.Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
+        Task task = new Task("Task 1", "Description 1", Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
         int taskId = manager.addTask(task);
 
-        Task updatedTask = new Task(taskId, "Updated Task", "Updated Description", Task.Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(45));
+        Task updatedTask = new Task(taskId, "Updated Task", "Updated Description", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(45));
         manager.updateTask(updatedTask);
 
         Task loadedTask = manager.getTask(taskId);
@@ -75,7 +70,7 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void testRemoveTask() {
-        Task task = new Task("Task 1", "Description 1", Task.Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
+        Task task = new Task("Task 1", "Description 1", Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
         int taskId = manager.addTask(task);
         manager.removeTask(taskId);
 
@@ -84,8 +79,8 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     public void testGetHistory() {
-        Task task1 = new Task("Task 1", "Description 1", Task.Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
-        Task task2 = new Task("Task 2", "Description 2", Task.Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(60));
+        Task task1 = new Task("Task 1", "Description 1", Status.NEW, LocalDateTime.now(), Duration.ofMinutes(30));
+        Task task2 = new Task("Task 2", "Description 2", Status.IN_PROGRESS, LocalDateTime.now(), Duration.ofMinutes(60));
 
         int id1 = manager.addTask(task1);
         int id2 = manager.addTask(task2);
@@ -112,31 +107,34 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         manager.addSubtask(subtask1);
         manager.addSubtask(subtask2);
+        manager.updateEpic(epic);
 
-        epic.calculateStatus();
-        assertEquals(Task.Status.NEW, epic.getStatus());
+        assertEquals(Status.NEW, epic.getStatus());
 
-        subtask1.setStatus(Task.Status.DONE);
-        epic.calculateStatus();
-        assertEquals(Task.Status.NEW, epic.getStatus());
+        subtask1.setStatus(Status.DONE);
+        manager.updateEpic(epic);
 
-        subtask2.setStatus(Task.Status.IN_PROGRESS);
-        epic.calculateStatus();
-        assertEquals(Task.Status.IN_PROGRESS, epic.getStatus());
+        assertEquals(Status.NEW, epic.getStatus());
 
-        subtask1.setStatus(Task.Status.DONE);
-        subtask2.setStatus(Task.Status.DONE);
-        epic.calculateStatus();
-        assertEquals(Task.Status.DONE, epic.getStatus());
+        subtask2.setStatus(Status.IN_PROGRESS);
+        manager.updateEpic(epic);
+
+        assertEquals(Status.IN_PROGRESS, epic.getStatus());
+
+        subtask1.setStatus(Status.DONE);
+        subtask2.setStatus(Status.DONE);
+        manager.updateEpic(epic);
+
+        assertEquals(Status.DONE, epic.getStatus());
     }
 
     @Test
     public void testTaskIntersection() {
-        Task task1 = new Task("Task 1", "Description 1", Task.Status.NEW, LocalDateTime.of(2025, 5, 1, 10, 0), Duration.ofMinutes(60));
-        Task task2 = new Task("Task 2", "Description 2", Task.Status.NEW, LocalDateTime.of(2025, 5, 1, 10, 30), Duration.ofMinutes(60));
-        Task task3 = new Task("Task 3", "Description 3", Task.Status.NEW, LocalDateTime.of(2025, 5, 1, 12, 0), Duration.ofMinutes(60));
+        Task task1 = new Task("Task 1", "Description 1", Status.NEW, LocalDateTime.of(2025, 5, 1, 10, 0), Duration.ofMinutes(60));
+        Task task2 = new Task("Task 2", "Description 2", Status.NEW, LocalDateTime.of(2025, 5, 1, 10, 30), Duration.ofMinutes(60));
+        Task task3 = new Task("Task 3", "Description 3", Status.NEW, LocalDateTime.of(2025, 5, 1, 12, 0), Duration.ofMinutes(60));
 
-        assertTrue(TaskManager.intersects(task1, task2));
-        assertFalse(TaskManager.intersects(task1, task3));
+        assertTrue(InMemoryTaskManager.intersects(task1, task2));
+        assertFalse(InMemoryTaskManager.intersects(task1, task3));
     }
 }

@@ -4,6 +4,7 @@ import manager.FileBackedTaskManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
@@ -11,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,13 +45,13 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
     @Test
     public void testFileBackedSpecificFunctionality() {
         // --- Создание задач и эпика ---
-        Task task = new Task("Task 1", "Desc 1", Task.Status.NEW,
+        Task task = new Task("Task 1", "Desc 1", Status.NEW,
                 LocalDateTime.of(2025, 10, 6, 9, 0), Duration.ofMinutes(30));
         Epic epic = new Epic("Epic 1", "Desc Epic",
                 LocalDateTime.of(2025, 10, 6, 10, 0), Duration.ofMinutes(120));
         int epicId = manager.addEpic(epic);
 
-        Subtask subtask = new Subtask("Subtask 1", "Desc Sub", Task.Status.NEW,
+        Subtask subtask = new Subtask("Subtask 1", "Desc Sub", Status.NEW,
                 epicId, LocalDateTime.of(2025, 10, 6, 10, 30), Duration.ofMinutes(60));
 
         int taskId = manager.addTask(task);
@@ -85,7 +85,7 @@ public class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskMan
 
     @Test
     public void testPersistenceAfterRestart() {
-        Task task = new Task("Task Persist", "Desc", Task.Status.NEW,
+        Task task = new Task("Task Persist", "Desc", Status.NEW,
                 LocalDateTime.now(), Duration.ofMinutes(30));
         int taskId = manager.addTask(task);
 

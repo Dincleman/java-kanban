@@ -32,20 +32,45 @@ public interface TaskManager {
      */
     int addEpic(Epic epic);
 
-    // --- Получение по ID ---
-
+    /**
+     * Получает задачу по ID
+     * @param id искомой задачи
+     * @return Task найденная задача
+     */
     Task getTask(int id);
 
+    /**
+     * Получает подзадачу по ID
+     * @param id искомой подзадачи
+     * @return Subtask найденная подзадача
+     */
     Subtask getSubtask(int id);
 
+    /**
+     * Получает эпик по ID
+     * @param id искомого эпика
+     * @return Epic найденный эпик
+     */
     Epic getEpic(int id);
 
     // --- Получение всех ---
 
+    /**
+     * Получает список всех задач
+     * @return List<Task> список всех задач
+     */
     List<Task> getAllTasks();
 
+    /**
+     * Получает список всех подзадач
+     * @return List<Subtask> список всех подзадач
+     */
     List<Subtask> getAllSubtasks();
 
+    /**
+     * Получает список всех эпиков
+     * @return List<Epic> список всех эпиков
+     */
     List<Epic> getAllEpics();
 
     /**
@@ -80,26 +105,55 @@ public interface TaskManager {
 
     // --- Удаление по ID ---
 
+    /**
+     * Удаляет задачу по id.
+     * @param id искомой задача
+     */
     void removeTask(int id);
 
+    /**
+     * Удаляет подзадачу по id.
+     * @param id искомой подзадачи
+     */
     void removeSubtask(int id);
 
+    /**
+     * Удаляет эпик по id.
+     * @param id искомого эпика
+     */
     void removeEpic(int id);
 
     // --- Удаление всех ---
 
+    /**
+     * Удаляет все задачи
+     */
     void clearTasks();
 
+    /**
+     * Удаляет все подзадачи
+     */
     void clearSubtasks();
 
+    /**
+     * Удаляет все эпики
+     */
     void clearEpics();
 
     // --- История ---
 
+    /**
+     * Получает список истории по задачам
+     * @return List<Task> список истории по задачам
+     */
     List<Task> getHistory();
 
     // --- Приоритеты ---
 
+    /**
+     * Получает список приоритетных задач
+     * @return List<Task> список приоритетных задач
+     */
     List<Task> getPrioritizedTasks();
 
     // --- Утилиты ---
@@ -109,20 +163,5 @@ public interface TaskManager {
      */
     void clearAll();
 
-    /**
-     * Проверка пересечения по времени двух задач.
-     * @param task1 первая задача
-     * @param task2 вторая задача
-     * @return true, если задачи пересекаются по времени, иначе false
-     */
-    static boolean intersects(Task task1, Task task2) {
-        if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null) {
-            return false;
-        }
-        LocalDateTime start1 = task1.getStartTime();
-        LocalDateTime end1 = task1.getEndTime();
-        LocalDateTime start2 = task2.getStartTime();
-        LocalDateTime end2 = task2.getEndTime();
-        return end1.isAfter(start2) && end2.isAfter(start1);
-    }
+
 }
