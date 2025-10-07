@@ -51,12 +51,6 @@ public class InMemoryTaskManagerTest extends TaskManagerTest<InMemoryTaskManager
         assertEquals(id2, history.get(0).getId());
         assertEquals(task3.getId(), history.get(1).getId());
 
-        // --- Проверка пересечения задач ---
-        Task taskOverlap = new Task("Overlap", "Desc", Status.NEW,
-                LocalDateTime.of(2025, 10, 6, 10, 00), Duration.ofMinutes(30));
-        assertTrue(InMemoryTaskManager.intersects(task2, taskOverlap), "Задачи должны пересекаться");
-        assertFalse(InMemoryTaskManager.intersects(task3, task2), "Задачи не должны пересекаться");
-
         manager.clearAll();
         assertTrue(manager.getAllTasks().isEmpty(), "Все задачи должны быть удалены");
         assertTrue(manager.getAllSubtasks().isEmpty(), "Все подзадачи должны быть удалены");

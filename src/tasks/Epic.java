@@ -33,11 +33,6 @@ public class Epic extends Task {
         return TaskType.EPIC;
     }
 
-    @Override
-    public String getName() {
-        return getTitle();
-    }
-
     public void addSubtask(Subtask subtask) {
         if (getId() == subtask.getId()) {
             throw new IllegalArgumentException("Подзадача не может быть своим эпиком");

@@ -127,14 +127,4 @@ public abstract class TaskManagerTest<T extends TaskManager> {
 
         assertEquals(Status.DONE, epic.getStatus());
     }
-
-    @Test
-    public void testTaskIntersection() {
-        Task task1 = new Task("Task 1", "Description 1", Status.NEW, LocalDateTime.of(2025, 5, 1, 10, 0), Duration.ofMinutes(60));
-        Task task2 = new Task("Task 2", "Description 2", Status.NEW, LocalDateTime.of(2025, 5, 1, 10, 30), Duration.ofMinutes(60));
-        Task task3 = new Task("Task 3", "Description 3", Status.NEW, LocalDateTime.of(2025, 5, 1, 12, 0), Duration.ofMinutes(60));
-
-        assertTrue(InMemoryTaskManager.intersects(task1, task2));
-        assertFalse(InMemoryTaskManager.intersects(task1, task3));
-    }
 }

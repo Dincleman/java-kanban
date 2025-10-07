@@ -39,11 +39,6 @@ public class Subtask extends Task {
         return TaskType.SUBTASK;
     }
 
-    @Override
-    public String getName() {
-        return getTitle();
-    }
-
     public int getEpicId() {
         return epicId;
     }

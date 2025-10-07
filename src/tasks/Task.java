@@ -43,11 +43,6 @@ public class Task {
         this(title, description, status, null, Duration.ZERO);  // Вызов конструктора с 5 параметрами
     }
 
-    // Конструктор по умолчанию
-    public Task() {
-        this("", "", Status.NEW, null, Duration.ZERO);  // Вызов конструктора с 5 параметрами
-    }
-
     // Геттеры и сеттеры
     public int getId() {
         return id;
@@ -143,38 +138,8 @@ public class Task {
     }
 
 
-    public String getName() {
-        return title;
-    }
-
     public TaskType getType() {
         return TaskType.TASK; // Для базового Task тип TASK
     }
 
-    // Методы для изменения статуса задачи
-
-    /**
-     * Завершает задачу, меняет её статус на DONE.
-     */
-    public void completeTask() {
-        if (this.status == Status.IN_PROGRESS) {
-            this.status = Status.DONE;
-        }
-    }
-
-    /**
-     * Проверяет, можно ли начать задачу.
-     * Возвращает true, если задача в статусе NEW и имеет время начала.
-     */
-    public boolean canStart() {
-        return this.status == Status.NEW && this.startTime != null;
-    }
-
-    /**
-     * Проверяет, можно ли завершить задачу.
-     * Возвращает true, если задача в статусе IN_PROGRESS и имеет время окончания.
-     */
-    public boolean canComplete() {
-        return this.status == Status.IN_PROGRESS && this.endTime != null;
-    }
 }

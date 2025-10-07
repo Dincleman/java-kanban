@@ -298,13 +298,13 @@ public class InMemoryTaskManager implements TaskManager {
         epic.setEndTime(earliestStart.get().plus(totalDuration));
     }
 
-    /*  /**
+    /**
      * Проверка пересечения по времени двух задач.
      * @param task1 первая задача
      * @param task2 вторая задача
      * @return true, если задачи пересекаются по времени, иначе false
      */
-    public static boolean intersects(Task task1, Task task2) {
+     boolean intersects(Task task1, Task task2) {
         if (task1 == null || task2 == null || task1.getStartTime() == null || task2.getStartTime() == null) {
             return false;
         }
@@ -318,11 +318,12 @@ public class InMemoryTaskManager implements TaskManager {
     protected void addToPrioritized(Task task) {
         if (task.getStartTime() != null) {
             List<Task> tmpTaskList = prioritizedTasks.stream()
-                    .filter(fTask -> InMemoryTaskManager.intersects(task, fTask))
+                    .filter(fTask -> intersects(task, fTask))
                     .collect(Collectors.toList());
             if (!tmpTaskList.isEmpty())
                 System.out.println("Внимание, добавляемая задача пересекается с другими");
-            prioritizedTasks.add(task);
+            else
+                prioritizedTasks.add(task);
         }
     }
 
@@ -330,8 +331,5 @@ public class InMemoryTaskManager implements TaskManager {
         prioritizedTasks.remove(task);
     }
 
-    public void setNextId(int nextId) {
-        this.nextId = nextId;
-    }
 }
 
