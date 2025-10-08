@@ -1,23 +1,46 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
 public class Task {
     private int id;
     private String title;
     private String description;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime; // Добавлено поле для хранения времени окончания
 
-    // Конструктор с двумя параметрами (статус по умолчанию NEW)
-    public Task(String title, String description) {
+    // Конструктор с id, title, description, status, startTime, duration
+    public Task(int id, String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.status = Status.NEW;
+        this.status = status != null ? status : Status.NEW;
+        this.startTime = startTime;
+        this.duration = duration != null ? duration : Duration.ZERO;
+        // Вычисляем endTime, если возможно
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
     }
 
-    // Новый конструктор с тремя параметрами (статус передается явно)
+    // Конструктор с параметрами (без id, для обратной совместимости)
+    // Важно, чтобы он правильно ссылался на конструктор с 5 параметрами
+    public Task(String title, String description, Status status, LocalDateTime startTime, Duration duration) {
+        this(0, title, description, status, startTime, duration);  // Вызов конструктора с 5 параметрами (id по умолчанию 0)
+    }
+
+    // Конструктор с параметрами (без id, для обратной совместимости)
+    public Task(String title, String description, LocalDateTime startTime, Duration duration) {
+        this(title, description, Status.NEW, startTime, duration);  // Вызов конструктора с 5 параметрами
+    }
+
+    // Конструктор с title, description, status (без id и времени, для обратной совместимости)
     public Task(String title, String description, Status status) {
-        this.title = title;
-        this.description = description;
-        this.status = status;
+        this(title, description, status, null, Duration.ZERO);  // Вызов конструктора с 5 параметрами
     }
 
     // Геттеры и сеттеры
@@ -53,13 +76,70 @@ public class Task {
         this.status = status;
     }
 
+    public Duration getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Duration duration) {
+        this.duration = duration != null ? duration : Duration.ZERO;
+        // Пересчитываем endTime, если startTime есть
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+        // Пересчитываем endTime, если duration есть
+        if (startTime != null && duration != null) {
+            this.endTime = startTime.plus(duration);
+        }
+    }
+
+    /**
+     * Возвращает время окончания задачи. Теперь возвращает хранимое значение.
+     */
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
     @Override
     public String toString() {
-        return "Tasks.Task{" +
+        return "Task{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", duration=" + duration +
+                ", startTime=" + startTime +
+                ", endTime=" + getEndTime() +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Task)) return false;
+        Task task = (Task) o;
+        return id == task.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
+    public TaskType getType() {
+        return TaskType.TASK; // Для базового Task тип TASK
+    }
+
 }

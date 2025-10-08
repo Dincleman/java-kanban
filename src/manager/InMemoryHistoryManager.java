@@ -1,4 +1,5 @@
 package manager;
+
 import tasks.Task;
 
 import java.util.ArrayList;
@@ -11,13 +12,23 @@ public class InMemoryHistoryManager implements HistoryManager {
     private Node head;
     private Node tail;
 
+    private static class Node {
+        Task task;
+        Node prev;
+        Node next;
+
+        Node(Task task) {
+            this.task = task;
+        }
+    }
+
     @Override
     public void add(Task task) {
         if (task == null) {
             return;
         }
-        remove(task.getId()); // Удаляем задачу, если она уже есть в истории
-        linkLast(task); // Добавляем задачу в конец списка
+        remove(task.getId());
+        linkLast(task);
     }
 
     @Override
@@ -26,8 +37,8 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (node == null) {
             return;
         }
-        removeNode(node); // Удаляем узел из списка
-        historyMap.remove(id); // Удаляем задачу из мапы
+        removeNode(node);
+        historyMap.remove(id);
     }
 
     @Override
@@ -41,28 +52,42 @@ public class InMemoryHistoryManager implements HistoryManager {
         return history;
     }
 
+
     private void linkLast(Task task) {
         Node newNode = new Node(task);
         if (tail == null) {
             head = newNode;
+            tail = newNode;
         } else {
             tail.next = newNode;
             newNode.prev = tail;
+            tail = newNode;
         }
-        tail = newNode;
         historyMap.put(task.getId(), newNode);
     }
 
     private void removeNode(Node node) {
+        if (node == null) return;
+
         if (node.prev != null) {
             node.prev.next = node.next;
         } else {
             head = node.next;
         }
+
         if (node.next != null) {
             node.next.prev = node.prev;
         } else {
             tail = node.prev;
         }
+        node.prev = null;
+        node.next = null;
+    }
+
+    @Override
+    public void clear() {
+        head = null;
+        tail = null;
+        historyMap.clear();
     }
 }

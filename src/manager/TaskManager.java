@@ -7,50 +7,160 @@ import tasks.Task;
 import java.util.List;
 
 public interface TaskManager {
-    // Задачи
-    int addNewTask(Task task);
 
+    // --- Добавление ---
+
+    /**
+     * Добавляет новую задачу.
+     * @param task задача для добавления
+     * @return id созданной задачи
+     */
+    int addTask(Task task);
+
+    /**
+     * Добавляет новую подзадачу.
+     * @param subtask подзадача для добавления
+     * @return id созданной подзадачи
+     */
+    int addSubtask(Subtask subtask);
+
+    /**
+     * Добавляет новый эпик.
+     * @param epic эпик для добавления
+     * @return id созданного эпика
+     */
+    int addEpic(Epic epic);
+
+    /**
+     * Получает задачу по ID
+     * @param id искомой задачи
+     * @return Task найденная задача
+     */
     Task getTask(int id);
 
-    List<Task> getTasks();
-
-    void removeTask(int id);
-
-    // Подзадачи
-    int addNewSubtask(Subtask subtask);
-
+    /**
+     * Получает подзадачу по ID
+     * @param id искомой подзадачи
+     * @return Subtask найденная подзадача
+     */
     Subtask getSubtask(int id);
 
-    List<Subtask> getSubtasks();
-
-    void removeSubtask(int id);
-
-    // Эпики
-    int addNewEpic(Epic epic);
-
+    /**
+     * Получает эпик по ID
+     * @param id искомого эпика
+     * @return Epic найденный эпик
+     */
     Epic getEpic(int id);
 
-    List<Epic> getEpics();
+    // --- Получение всех ---
 
+    /**
+     * Получает список всех задач
+     * @return List<Task> список всех задач
+     */
+    List<Task> getAllTasks();
+
+    /**
+     * Получает список всех подзадач
+     * @return List<Subtask> список всех подзадач
+     */
+    List<Subtask> getAllSubtasks();
+
+    /**
+     * Получает список всех эпиков
+     * @return List<Epic> список всех эпиков
+     */
+    List<Epic> getAllEpics();
+
+    /**
+     * Получить список подзадач конкретного эпика.
+     * @param epicId id эпика
+     * @return список подзадач эпика
+     */
+    List<Subtask> getEpicSubtasks(int epicId);
+
+    // --- Обновление ---
+
+    /**
+     * Обновляет задачу.
+     * @param task задача с обновлёнными данными (id обязателен)
+     * @return true, если обновление прошло успешно, false если задача с таким id не найдена
+     */
+    boolean updateTask(Task task);
+
+    /**
+     * Обновляет подзадачу.
+     * @param subtask подзадача с обновлёнными данными (id обязателен)
+     * @return true, если обновление прошло успешно, false если подзадача с таким id не найдена
+     */
+    boolean updateSubtask(Subtask subtask);
+
+    /**
+     * Обновляет эпик.
+     * @param epic эпик с обновлёнными данными (id обязателен)
+     * @return true, если обновление прошло успешно, false если эпик с таким id не найден
+     */
+    boolean updateEpic(Epic epic);
+
+    // --- Удаление по ID ---
+
+    /**
+     * Удаляет задачу по id.
+     * @param id искомой задача
+     */
+    void removeTask(int id);
+
+    /**
+     * Удаляет подзадачу по id.
+     * @param id искомой подзадачи
+     */
+    void removeSubtask(int id);
+
+    /**
+     * Удаляет эпик по id.
+     * @param id искомого эпика
+     */
     void removeEpic(int id);
 
-    // Обновление задач, подзадач и эпиков
-    void updateTask(Task task);
+    // --- Удаление всех ---
 
-    void updateSubtask(Subtask subtask);
+    /**
+     * Удаляет все задачи
+     */
+    void clearTasks();
 
-    void updateEpic(Epic epic);
+    /**
+     * Удаляет все подзадачи
+     */
+    void clearSubtasks();
 
-    // История
+    /**
+     * Удаляет все эпики
+     */
+    void clearEpics();
+
+    // --- История ---
+
+    /**
+     * Получает список истории по задачам
+     * @return List<Task> список истории по задачам
+     */
     List<Task> getHistory();
 
-    // Удаление всех задач, подзадач и эпиков
-    void removeAllTasks();
+    // --- Приоритеты ---
 
-    void removeAllSubtasks();
+    /**
+     * Получает список приоритетных задач
+     * @return List<Task> список приоритетных задач
+     */
+    List<Task> getPrioritizedTasks();
 
-    void removeAllEpics();
+    // --- Утилиты ---
 
-    // Метод для получения всех задач (включая задачи, подзадачи и эпики)
-    List<Task> getAllTasks();
+    /**
+     * Полностью очищает все данные менеджера.
+     */
+    void clearAll();
+
+
 }
