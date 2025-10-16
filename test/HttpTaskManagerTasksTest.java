@@ -1,6 +1,6 @@
 import com.google.gson.Gson;
 import handler.TaskHandler;
-import manager.HttpTaskServer;
+import http.HttpTaskServer;
 import manager.InMemoryTaskManager;
 import manager.TaskManager;
 import org.junit.jupiter.api.AfterEach;
@@ -65,7 +65,7 @@ public class HttpTaskManagerTasksTest {
 
         assertNotNull(tasksFromManager, "Задачи не возвращаются");
         assertEquals(1, tasksFromManager.size(), "Некорректное количество задач");
-        assertEquals("Test 2", tasksFromManager.get(0).getTitle(), "Некорректное имя задачи");
+        assertEquals("Test 2", tasksFromManager.getFirst().getTitle(), "Некорректное имя задачи");
     }
 
     @Test

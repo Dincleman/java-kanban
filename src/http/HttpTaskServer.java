@@ -1,10 +1,12 @@
-package manager;
+package http;
 
 import com.sun.net.httpserver.HttpServer;
 import handler.EpicHandler;
 import handler.HistoryHandler;
 import handler.SubtaskHandler;
 import handler.TaskHandler;
+import manager.Managers;
+import manager.TaskManager;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
