@@ -138,6 +138,7 @@ public class SubtaskHandler extends BaseHttpHandler {
             return subtask;
         } catch (Exception e) {
             // Обработка ошибок парсинга
+            System.out.println("Произошла ошибка парсинга подзадачи " + e.getMessage());
             return null;
         }
     }

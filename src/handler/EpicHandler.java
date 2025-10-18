@@ -130,6 +130,7 @@ public class EpicHandler extends BaseHttpHandler {
             return epic;
         } catch (Exception e) {
             // Обработка ошибок парсинга
+            System.out.println("Произошла ошибка парсинга эпика " + e.getMessage());
             return null;
         }
     }

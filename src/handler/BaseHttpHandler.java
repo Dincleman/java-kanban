@@ -12,7 +12,7 @@ import java.util.Optional;
 import manager.TaskManager;
 import ru.common.util.GsonFactory;
 
-public class BaseHttpHandler implements HttpHandler {
+public abstract class BaseHttpHandler implements HttpHandler {
 
     protected static final Gson GSON = GsonFactory.createGson();
     protected final TaskManager taskManager;
@@ -73,6 +73,5 @@ public class BaseHttpHandler implements HttpHandler {
     }
 
     @Override
-    public void handle(HttpExchange exchange) throws IOException {
-    }
+    public abstract void handle(HttpExchange exchange) throws IOException;
 }

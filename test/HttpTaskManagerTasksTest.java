@@ -137,7 +137,7 @@ public class HttpTaskManagerTasksTest {
         assertEquals(200, response.statusCode());
 
         // проверяем, что создалась одна задача с корректным именем
-        Task tasksFromManager = TaskHandler.parseTaskFromJson(response.body());
+        Task tasksFromManager = TaskHandler.parseTaskFromJsonOut(response.body());
 
         assertNotNull(tasksFromManager, "Задача не возвращается");
         assertEquals("Test 2", tasksFromManager.getTitle(), "Некорректное имя задачи");

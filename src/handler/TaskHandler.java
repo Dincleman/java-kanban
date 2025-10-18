@@ -3,10 +3,12 @@ package handler;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.sun.net.httpserver.HttpExchange;
+import manager.FileBackedTaskManager;
 import manager.TaskManager;
 import tasks.Status;
 import tasks.Task;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -90,7 +92,11 @@ public class TaskHandler extends BaseHttpHandler {
         }
     }
 
-    public static Task parseTaskFromJson(String jsonString) {
+    public static Task parseTaskFromJsonOut(String jsonString){
+        return parseTaskFromJson(jsonString);
+    }
+
+    private static Task parseTaskFromJson(String jsonString) {
         try {
             JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
 
@@ -114,6 +120,7 @@ public class TaskHandler extends BaseHttpHandler {
             return new Task(title, description, status, startTime, duration);
         } catch (Exception e) {
             // Обработка ошибок парсинга
+            System.out.println("Произошла ошибка парсинга задачи " + e.getMessage());
             return null;
         }
     }
