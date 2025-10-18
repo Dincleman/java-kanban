@@ -90,7 +90,7 @@ public class TaskHandler extends BaseHttpHandler {
         }
     }
 
-    public static Task parseTaskFromJsonOut(String jsonString){
+    public static Task parseTaskFromJsonOut(String jsonString) {
         return parseTaskFromJson(jsonString);
     }
 
